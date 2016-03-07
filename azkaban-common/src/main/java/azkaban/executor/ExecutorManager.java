@@ -1751,8 +1751,8 @@ public class ExecutorManager extends EventHandler implements
       new Pair<ExecutionReference, ExecutableFlow>(reference, exflow));
 
     logger.info(String.format(
-      "Successfully dispatched exec %d with error count %d",
-      exflow.getExecutionId(), reference.getNumErrors()));
+      "Successfully dispatched exec %d in executor %s with error count %d",
+      exflow.getExecutionId(), choosenExecutor, reference.getNumErrors()));
   }
 
   /*
@@ -1935,6 +1935,7 @@ public class ExecutorManager extends EventHandler implements
     /* Choose Executor for exflow among the available executors */
     private Executor selectExecutor(ExecutableFlow exflow,
       Set<Executor> availableExecutors) {
+      logger.info("check hosts -> " + Arrays.toString(exflow.getExecutionOptions().getLimitHosts().toArray()));
       Executor choosenExecutor =
         getUserSpecifiedExecutor(exflow.getExecutionOptions(),
           exflow.getExecutionId());
