@@ -16,12 +16,11 @@
 
 package azkaban.trigger.builtin;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import azkaban.flow.CommonJobProperties;
 import org.apache.log4j.Logger;
+import org.apache.commons.lang.StringUtils;
 
 import azkaban.executor.ExecutableFlow;
 import azkaban.executor.ExecutionOptions;
@@ -236,6 +235,11 @@ public class ExecuteFlowAction implements TriggerAction {
     }
     if (!executionOptions.isSuccessEmailsOverridden()) {
       executionOptions.setSuccessEmails(flow.getSuccessEmails());
+    }
+    if (exflow.getExecutionOptions().getLimitHosts().size() > 1) {
+      executionOptions.setLimitHosts(flow.getLimitHosts());
+    } else if (executionOptions.getFlowParameters().containsKey(CommonJobProperties.LIMIT_HOSTS)){
+      executionOptions.setLimitHosts(Arrays.asList(StringUtils.split(executionOptions.getFlowParameters().get(CommonJobProperties.LIMIT_HOSTS))));
     }
     exflow.setExecutionOptions(executionOptions);
 
