@@ -26,6 +26,7 @@ import java.util.Set;
 import azkaban.flow.Flow;
 import azkaban.project.Project;
 import azkaban.utils.TypedMapWrapper;
+import org.apache.log4j.Logger;
 
 public class ExecutableFlow extends ExecutableFlowBase {
   public static final String EXECUTIONID_PARAM = "executionId";
@@ -55,6 +56,8 @@ public class ExecutableFlow extends ExecutableFlowBase {
 
   private HashSet<String> proxyUsers = new HashSet<String>();
   private ExecutionOptions executionOptions;
+
+  private static Logger logger = Logger.getLogger(ExecutableFlow.class);
 
   public ExecutableFlow(Project project, Flow flow) {
     this.projectId = project.getId();
@@ -110,6 +113,8 @@ public class ExecutableFlow extends ExecutableFlowBase {
     if (flow.getLimitHosts() != null) {
       executionOptions.setLimitHosts(flow.getLimitHosts());
     }
+
+    printFlowPros();
   }
 
   @Override
@@ -278,5 +283,13 @@ public class ExecutableFlow extends ExecutableFlowBase {
     super.resetForRetry();
     this.setStatus(Status.RUNNING);
   }
+
+  public void printFlowPros() {
+    for (Map.Entry<String,Object> e : executionOptions.toObject().entrySet()) {
+      logger.info("flow pros \t" + e.getKey() + "\t" + e.getValue());
+    }
+    logger.info("flow id => " + this.getId());
+  }
+
 
 }

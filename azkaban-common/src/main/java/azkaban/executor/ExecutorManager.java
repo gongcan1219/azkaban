@@ -1936,6 +1936,7 @@ public class ExecutorManager extends EventHandler implements
     private Executor selectExecutor(ExecutableFlow exflow,
       Set<Executor> availableExecutors) {
       logger.info("check hosts -> " + Arrays.toString(exflow.getExecutionOptions().getLimitHosts().toArray()));
+      exflow.printFlowPros();
       Executor choosenExecutor =
         getUserSpecifiedExecutor(exflow.getExecutionOptions(),
           exflow.getExecutionId());
