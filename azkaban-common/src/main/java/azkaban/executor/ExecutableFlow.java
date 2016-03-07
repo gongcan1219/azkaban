@@ -107,6 +107,9 @@ public class ExecutableFlow extends ExecutableFlowBase {
     if (flow.getFailureEmails() != null) {
       executionOptions.setFailureEmails(flow.getFailureEmails());
     }
+    if (flow.getLimitHosts() != null) {
+      executionOptions.setLimitHosts(flow.getLimitHosts());
+    }
   }
 
   @Override

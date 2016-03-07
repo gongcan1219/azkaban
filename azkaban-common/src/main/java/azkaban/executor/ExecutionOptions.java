@@ -53,6 +53,7 @@ public class ExecutionOptions {
   private static final String SUCCESS_EMAILS_OVERRIDE = "successEmailsOverride";
   private static final String MAIL_CREATOR = "mailCreator";
   private static final String MEMORY_CHECK = "memoryCheck";
+  private static final String LIMIT_HOSTS = "limitHosts";
 
   private boolean notifyOnFirstFailure = true;
   private boolean notifyOnLastFailure = false;
@@ -60,6 +61,8 @@ public class ExecutionOptions {
   private boolean successEmailsOverride = false;
   private ArrayList<String> failureEmails = new ArrayList<String>();
   private ArrayList<String> successEmails = new ArrayList<String>();
+
+  private ArrayList<String> limitHosts = new ArrayList<String>();
 
   private Integer pipelineLevel = null;
   private Integer pipelineExecId = null;
@@ -115,6 +118,14 @@ public class ExecutionOptions {
 
   public List<String> getSuccessEmails() {
     return successEmails;
+  }
+
+  public void setLimitHosts(Collection<String> hosts) {
+    this.limitHosts = new ArrayList<String>(hosts);
+  }
+
+  public List<String> getLimitHosts() {
+    return limitHosts;
   }
 
   public boolean getNotifyOnFirstFailure() {
@@ -211,6 +222,7 @@ public class ExecutionOptions {
     flowOptionObj.put(SUCCESS_EMAILS_OVERRIDE, successEmailsOverride);
     flowOptionObj.put(MAIL_CREATOR, mailCreator);
     flowOptionObj.put(MEMORY_CHECK, memoryCheck);
+    flowOptionObj.put(LIMIT_HOSTS, limitHosts);
     return flowOptionObj;
   }
 
@@ -249,7 +261,7 @@ public class ExecutionOptions {
     // Failure action
     options.failureAction =
         FailureAction.valueOf(wrapper.getString(FAILURE_ACTION,
-            options.failureAction.toString()));
+                options.failureAction.toString()));
     options.pipelineLevel =
         wrapper.getInt(PIPELINE_LEVEL, options.pipelineLevel);
     options.pipelineExecId =
@@ -257,17 +269,19 @@ public class ExecutionOptions {
     options.queueLevel = wrapper.getInt(QUEUE_LEVEL, options.queueLevel);
 
     // Success emails
-    options.setSuccessEmails(wrapper.<String> getList(SUCCESS_EMAILS,
-        Collections.<String> emptyList()));
-    options.setFailureEmails(wrapper.<String> getList(FAILURE_EMAILS,
-        Collections.<String> emptyList()));
+    options.setSuccessEmails(wrapper.<String>getList(SUCCESS_EMAILS,
+            Collections.<String>emptyList()));
+    options.setFailureEmails(wrapper.<String>getList(FAILURE_EMAILS,
+            Collections.<String>emptyList()));
 
     options.setSuccessEmailsOverridden(wrapper.getBool(SUCCESS_EMAILS_OVERRIDE,
-        false));
+            false));
     options.setFailureEmailsOverridden(wrapper.getBool(FAILURE_EMAILS_OVERRIDE,
-        false));
+            false));
 
     options.setMemoryCheck(wrapper.getBool(MEMORY_CHECK, true));
+
+    options.setLimitHosts(wrapper.<String>getList(LIMIT_HOSTS, Collections.<String>emptyList()));
 
     return options;
   }

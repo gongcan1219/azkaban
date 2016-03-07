@@ -16,13 +16,7 @@
 
 package azkaban.flow;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import azkaban.executor.mail.DefaultMailCreator;
 
@@ -46,6 +40,7 @@ public class Flow {
   private List<String> successEmail = new ArrayList<String>();
   private String mailCreator = DefaultMailCreator.DEFAULT_MAIL_CREATOR;
   private ArrayList<String> errors;
+  private List<String> limitHosts = new ArrayList<String>();
   private int version = -1;
   private Map<String, Object> metadata = new HashMap<String, Object>();
 
@@ -83,6 +78,12 @@ public class Flow {
         node.setLevel(0);
         numLevels = 0;
         recursiveSetLevels(node);
+      }
+    }
+
+    for (FlowProps f : flowProps.values()) {
+      if (f.getProps().containsKey(CommonJobProperties.LIMIT_HOSTS)) {
+        setLimitHosts(f.getProps().getStringList(CommonJobProperties.LIMIT_HOSTS, Collections.EMPTY_LIST));
       }
     }
   }
@@ -130,6 +131,14 @@ public class Flow {
 
   public void addFailureEmails(Collection<String> emails) {
     failureEmail.addAll(emails);
+  }
+
+  public List<String> getLimitHosts() {
+    return limitHosts;
+  }
+
+  private void setLimitHosts(List<String> limitHosts) {
+    this.limitHosts = limitHosts;
   }
 
   public int getNumLevels() {
@@ -242,6 +251,7 @@ public class Flow {
     flowObj.put("success.email", successEmail);
     flowObj.put("mailCreator", mailCreator);
     flowObj.put("layedout", isLayedOut);
+    flowObj.put("flow.limit.hosts", limitHosts);
     if (errors != null) {
       flowObj.put("errors", errors);
     }
@@ -327,6 +337,7 @@ public class Flow {
     if (flowObject.containsKey("mailCreator")) {
       flow.mailCreator = flowObject.get("mailCreator").toString();
     }
+    flow.limitHosts = (List<String>) flowObject.get("flow.limit.hosts");
     return flow;
   }
 
