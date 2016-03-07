@@ -238,11 +238,14 @@ public class ExecuteFlowAction implements TriggerAction {
       executionOptions.setSuccessEmails(flow.getSuccessEmails());
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
     if (exflow.getExecutionOptions().getLimitHosts().size() > 1) {
       executionOptions.setLimitHosts(flow.getLimitHosts());
     } else if (executionOptions.getFlowParameters().containsKey(CommonJobProperties.LIMIT_HOSTS)){
       executionOptions.setLimitHosts(Arrays.asList(StringUtils.split(executionOptions.getFlowParameters().get(CommonJobProperties.LIMIT_HOSTS),",")));
     }
+=======
+>>>>>>> parent of 0ca4213... fix dispatch
 =======
 >>>>>>> parent of 0ca4213... fix dispatch
     exflow.setExecutionOptions(executionOptions);
