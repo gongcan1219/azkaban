@@ -83,7 +83,15 @@ public class HttpRequestUtils {
     }
     if (hasParam(req, "notifyFailureLast")) {
       execOptions.setNotifyOnLastFailure(Boolean.parseBoolean(getParam(req,
-          "notifyFailureLast")));
+              "notifyFailureLast")));
+    }
+
+    if (hasParam(req, "flow.limit.hosts")) {
+      String hosts = getParam(req, "flow.limit.hosts");
+      if (!hosts.isEmpty()) {
+        String[] hostsSplit = hosts.split("\\s*,\\s*|\\s*;\\s*|\\s+");
+        execOptions.setLimitHosts(Arrays.asList(hostsSplit));
+      }
     }
 
     String concurrentOption = "skip";

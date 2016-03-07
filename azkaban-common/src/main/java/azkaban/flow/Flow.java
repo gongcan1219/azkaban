@@ -80,12 +80,6 @@ public class Flow {
         recursiveSetLevels(node);
       }
     }
-
-    for (FlowProps f : flowProps.values()) {
-      if (f.getProps().containsKey(CommonJobProperties.LIMIT_HOSTS)) {
-        setLimitHosts(f.getProps().getStringList(CommonJobProperties.LIMIT_HOSTS, Collections.EMPTY_LIST));
-      }
-    }
   }
 
   private void recursiveSetLevels(Node node) {
@@ -134,6 +128,13 @@ public class Flow {
   }
 
   public List<String> getLimitHosts() {
+    for (FlowProps f : flowProps.values()) {
+      if (f.getProps().containsKey(CommonJobProperties.LIMIT_HOSTS)) {
+        setLimitHosts(f.getProps().getStringList(CommonJobProperties.LIMIT_HOSTS, Collections.EMPTY_LIST));
+      } else {
+
+      }
+    }
     return limitHosts;
   }
 
