@@ -63,8 +63,6 @@ public class CommonJobProperties {
    */
   public static final String FAILURE_EMAILS = "failure.emails";
 
-  public static final String LIMIT_HOSTS = "flow.limit.hosts";
-
   /*
    * The following are the common props that will be added to the job by azkaban
    */
