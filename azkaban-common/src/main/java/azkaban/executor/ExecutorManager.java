@@ -1751,8 +1751,8 @@ public class ExecutorManager extends EventHandler implements
       new Pair<ExecutionReference, ExecutableFlow>(reference, exflow));
 
     logger.info(String.format(
-      "Successfully dispatched exec %d in executor %s with error count %d",
-      exflow.getExecutionId(), choosenExecutor, reference.getNumErrors()));
+      "Successfully dispatched exec %d with error count %d",
+      exflow.getExecutionId(), reference.getNumErrors()));
   }
 
   /*
