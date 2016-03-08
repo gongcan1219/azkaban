@@ -16,14 +16,7 @@
 
 package azkaban.executor;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import azkaban.flow.CommonJobProperties;
 import azkaban.flow.Node;
@@ -355,8 +348,9 @@ public class ExecutableNode {
       this.outputProps = new Props(null, outputProps);
     }
 
-    this.limitHosts = new ArrayList<String>();
+    //this.limitHosts = new ArrayList<String>();
     this.limitHosts.addAll(wrappedMap.getStringCollection(LIMIT_HOSTS, Collections.<String> emptyList()));
+    System.out.println(String.format("creator hosts %s", Arrays.asList(limitHosts)));
 
     Collection<Object> pastAttempts =
         wrappedMap.<Object> getCollection(PASTATTEMPTS_PARAM);
