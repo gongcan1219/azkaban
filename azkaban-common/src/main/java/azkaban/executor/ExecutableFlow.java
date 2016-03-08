@@ -21,6 +21,7 @@ import azkaban.flow.Flow;
 import azkaban.flow.FlowProps;
 import azkaban.project.Project;
 import azkaban.utils.TypedMapWrapper;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 public class ExecutableFlow extends ExecutableFlowBase {
@@ -87,6 +88,9 @@ public class ExecutableFlow extends ExecutableFlowBase {
 
   public void setExecutionOptions(ExecutionOptions options) {
     executionOptions = options;
+    if (options.getFlowParameters().containsKey("limitHosts")) {
+      options.setLimitHosts(Arrays.asList(StringUtils.split(options.getFlowParameters().get("limitHosts"), "\\s*,\\s*|\\s*;\\s*|\\s+")));
+    }
   }
 
   public ExecutionOptions getExecutionOptions() {
@@ -105,7 +109,7 @@ public class ExecutableFlow extends ExecutableFlowBase {
     if (flow.getFailureEmails() != null) {
       executionOptions.setFailureEmails(flow.getFailureEmails());
     }
-    if (flow.getLimitHosts() != null) {
+    if (flow.getLimitHosts() != null && flow.getLimitHosts().size() > 0) {
       executionOptions.setLimitHosts(flow.getLimitHosts());
     }
   }
