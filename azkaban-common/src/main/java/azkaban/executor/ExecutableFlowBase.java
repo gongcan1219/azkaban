@@ -125,9 +125,15 @@ public class ExecutableFlowBase extends ExecutableNode {
 
         ExecutableFlowBase embeddedFlow =
             new ExecutableFlowBase(project, node, subFlow, this);
+        if (subFlow.getLimitHosts() != null && subFlow.getLimitHosts().size() > 0) {
+          embeddedFlow.setLimitHosts(subFlow.getLimitHosts());
+        }
         executableNodes.put(id, embeddedFlow);
       } else {
         ExecutableNode exNode = new ExecutableNode(node, this);
+        if (flow.getLimitHosts() != null && flow.getLimitHosts().size() > 0) {
+          exNode.setLimitHosts(flow.getLimitHosts());
+        }
         executableNodes.put(id, exNode);
       }
     }
