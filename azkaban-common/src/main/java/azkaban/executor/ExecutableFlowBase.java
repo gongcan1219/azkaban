@@ -15,11 +15,7 @@
  */
 package azkaban.executor;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import azkaban.flow.Edge;
 import azkaban.flow.Flow;
@@ -35,11 +31,14 @@ public class ExecutableFlowBase extends ExecutableNode {
   public static final String PROPERTIES_PARAM = "properties";
   public static final String SOURCE_PARAM = "source";
   public static final String INHERITED_PARAM = "inherited";
+  public static final String LIMIT_HOSTS = "limit_hosts";
 
   private HashMap<String, ExecutableNode> executableNodes =
       new HashMap<String, ExecutableNode>();
   private ArrayList<String> startNodes;
   private ArrayList<String> endNodes;
+
+  private ArrayList<String> limitHosts;
 
   private HashMap<String, FlowProps> flowProps =
       new HashMap<String, FlowProps>();
@@ -115,6 +114,10 @@ public class ExecutableFlowBase extends ExecutableNode {
     this.flowId = flow.getId();
     flowProps.putAll(flow.getAllFlowProps());
 
+    if (flow.getLimitHosts() != null && flow.getLimitHosts().size() > 0) {
+      this.setLimitHosts(flow.getLimitHosts());
+    }
+
     //System.out.println("What'a fucking FlowBase");
 
     for (Node node : flow.getNodes()) {
@@ -125,15 +128,15 @@ public class ExecutableFlowBase extends ExecutableNode {
 
         ExecutableFlowBase embeddedFlow =
             new ExecutableFlowBase(project, node, subFlow, this);
-        if (subFlow.getLimitHosts() != null && subFlow.getLimitHosts().size() > 0) {
+        /*if (subFlow.getLimitHosts() != null && subFlow.getLimitHosts().size() > 0) {
           embeddedFlow.setLimitHosts(subFlow.getLimitHosts());
-        }
+        }*/
         executableNodes.put(id, embeddedFlow);
       } else {
         ExecutableNode exNode = new ExecutableNode(node, this);
-        if (flow.getLimitHosts() != null && flow.getLimitHosts().size() > 0) {
+        /*if (flow.getLimitHosts() != null && flow.getLimitHosts().size() > 0) {
           exNode.setLimitHosts(flow.getLimitHosts());
-        }
+        }*/
         executableNodes.put(id, exNode);
       }
     }
@@ -213,6 +216,14 @@ public class ExecutableFlowBase extends ExecutableNode {
     return endNodes;
   }
 
+  public ArrayList<String> getLimitHosts() {
+    return limitHosts;
+  }
+
+  public void setLimitHosts(Collection<String> limitHost) {
+    this.limitHosts = new ArrayList<String>(limitHost);
+  }
+
   @Override
   public Map<String, Object> toObject() {
     Map<String, Object> mapObj = new HashMap<String, Object>();
@@ -247,6 +258,7 @@ public class ExecutableFlowBase extends ExecutableNode {
       props.add(propObj);
     }
     flowObjMap.put(PROPERTIES_PARAM, props);
+    flowObjMap.put(LIMIT_HOSTS, limitHosts);
   }
 
   @Override
@@ -291,6 +303,8 @@ public class ExecutableFlowBase extends ExecutableNode {
       FlowProps flowProps = new FlowProps(inheritedSource, source);
       this.flowProps.put(source, flowProps);
     }
+
+    this.limitHosts = (ArrayList<String>) flowObjMap.getStringCollection(LIMIT_HOSTS, Collections.<String> emptyList());
   }
 
   public Map<String, Object> toUpdateObject(long lastUpdateTime) {

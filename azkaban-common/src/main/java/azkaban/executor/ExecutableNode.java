@@ -172,13 +172,13 @@ public class ExecutableNode {
     return inNodes;
   }
 
-  public void setLimitHosts(Collection<String> limitHosts) {
+  /*public void setLimitHosts(Collection<String> limitHosts) {
     this.limitHosts = new ArrayList<String>(limitHosts);
   }
 
   public List<String> getLimitHosts() {
     return limitHosts;
-  }
+  }*/
 
   public boolean hasJobSource() {
     return jobSource != null;
@@ -349,7 +349,7 @@ public class ExecutableNode {
     }
 
     //this.limitHosts = new ArrayList<String>();
-    this.limitHosts.addAll(wrappedMap.getStringCollection(LIMIT_HOSTS, Collections.<String> emptyList()));
+    //this.limitHosts.addAll(wrappedMap.getStringCollection(LIMIT_HOSTS, Collections.<String> emptyList()));
     //System.out.println(String.format("creator hosts %s", Arrays.asList(limitHosts)));
 
     Collection<Object> pastAttempts =
