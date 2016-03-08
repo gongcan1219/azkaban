@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Set;
 
 import azkaban.flow.Flow;
+import azkaban.flow.FlowProps;
 import azkaban.project.Project;
 import azkaban.utils.TypedMapWrapper;
 import org.apache.log4j.Logger;
@@ -284,7 +285,9 @@ public class ExecutableFlow extends ExecutableFlowBase {
       logger.info("flow pros \t" + e.getKey() + "\t" + e.getValue());
     }
     logger.info("flow id => " + this.getId());
+
+    for (FlowProps f : this.getFlowProps()) {
+      logger.info("pros -> " + f.getProps().toString());
+    }
   }
-
-
 }

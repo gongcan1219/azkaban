@@ -240,11 +240,6 @@ public class ExecuteFlowAction implements TriggerAction {
     if (!executionOptions.isSuccessEmailsOverridden()) {
       executionOptions.setSuccessEmails(flow.getSuccessEmails());
     }
-    if (exflow.getExecutionOptions().getLimitHosts().size() > 1) {
-      executionOptions.setLimitHosts(flow.getLimitHosts());
-    } else if (executionOptions.getFlowParameters().containsKey(CommonJobProperties.LIMIT_HOSTS)){
-      executionOptions.setLimitHosts(Arrays.asList(StringUtils.split(executionOptions.getFlowParameters().get(CommonJobProperties.LIMIT_HOSTS),",")));
-    }
     exflow.setExecutionOptions(executionOptions);
 
     try {
