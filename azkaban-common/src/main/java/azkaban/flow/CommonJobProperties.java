@@ -48,6 +48,16 @@ public class CommonJobProperties {
   public static final String RETRY_BACKOFF = "retry.backoff";
 
   /**
+   * The dispatch host limit
+   */
+  public static final String FLOW_LIMIT_HOSTS = "flow.limit.hosts";
+
+  /**
+   * The job dispatch host
+   */
+  public static final String JOB_LIMIT_HOST = "job.limit.host";
+
+  /**
    * Comma delimited list of email addresses for both failure and success
    * messages
    */
