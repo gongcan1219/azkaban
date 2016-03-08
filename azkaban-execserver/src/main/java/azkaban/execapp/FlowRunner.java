@@ -18,19 +18,13 @@ package azkaban.execapp;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
 
+import azkaban.utils.hash.ConsistentHash;
 import org.apache.log4j.Appender;
 import org.apache.log4j.FileAppender;
 import org.apache.log4j.Layout;
@@ -63,6 +57,7 @@ import azkaban.project.ProjectManagerException;
 import azkaban.utils.Props;
 import azkaban.utils.PropsUtils;
 import azkaban.utils.SwapQueue;
+import azkaban.executor.msg.ShortMsg;
 
 /**
  * Class that handles the running of a ExecutableFlow DAG
@@ -126,6 +121,10 @@ public class FlowRunner extends EventHandler implements Runnable {
   // The following is state that will trigger a retry of all failed jobs
   private boolean retryFailedJobs = false;
 
+  private final int replicas = 200;
+  private ConsistentHash<String> consistentHash;
+  private Props globalProps;
+
   /**
    * Constructor. This will create its own ExecutorService for thread pools
    *
@@ -173,6 +172,26 @@ public class FlowRunner extends EventHandler implements Runnable {
 
   public FlowRunner setFlowWatcher(FlowWatcher watcher) {
     this.watcher = watcher;
+    return this;
+  }
+
+  public FlowRunner setGlobalProps(Props globalProps) {
+    this.globalProps = globalProps;
+    return this;
+  }
+
+  public FlowRunner setConsistentHash() {
+    List<String> hosts  = flow.getLimitHosts();
+    if (hosts != null && hosts.size() > 0) {
+      try {
+        this.consistentHash = new ConsistentHash<String>(replicas,hosts);
+      } catch (Exception e) {
+        logger.warn("init consistentHash error",e);
+      }
+      logger.info("hosts -> " + Arrays.toString(hosts.toArray()));
+    } else {
+      logger.info("run with single machine");
+    }
     return this;
   }
 
@@ -1067,12 +1086,73 @@ public class FlowRunner extends EventHandler implements Runnable {
             flowPaused = false;
           }
 
+          if (node.getStatus() == Status.FAILED /*&& (node.getAttempt() > 3 || node.getPriority() < 2)*/){
+            logger.info("job failed alarm begin @#@#@#@#");
+            sendMsg(node);
+          }
+
           finishedNodes.add(node);
           node.getParentFlow().setUpdateTime(System.currentTimeMillis());
           interrupt();
           fireEventListeners(event);
         }
       }
+    }
+
+    public synchronized void sendMsg(final ExecutableNode node){
+
+      List<String> alarmList  = globalProps.getStringList("alarm.tel.list", Collections.<String> emptyList());
+      String msgUrl = globalProps.getString("alarm.msg.url", "");
+      String msgContent = globalProps.getString("alarm.msg.content", "");
+      String sign = globalProps.getString("alarm.msg.sign", "");
+
+      String fullMsg = String.format("%s %s %s", msgContent, node.getNestedId(), sign);
+
+      if (node.getAuthor() != null) {
+        fullMsg = String.format("%s %s author %s %s", msgContent, node.getNestedId(), node.getAuthor(), sign);
+      }
+
+      Set<String> alarmTell = new HashSet<String>(alarmList);
+
+      try {
+        if (node.getAlarmTells() != null && node.getAlarmTells().size() > 0) {
+          alarmTell.addAll(node.getAlarmTells());
+          logger.info("add flow alarm tell -> " + Arrays.toString(node.getAlarmTells().toArray()));
+        }
+      } catch (Exception e) {
+        logger.warn("check flow alarm error",e);
+      }
+
+      try {
+        if (node.getAlarm() != null && !"null".equals(node.getAlarm())) {
+          alarmTell.add(node.getAlarm());
+          logger.info("add job alarm tell -> " + node.getAlarm());
+        }
+      } catch (Exception e) {
+        logger.warn("check job alarm error",e);
+      } finally {
+        if (alarmTell.size() < 1) {
+          //alarmTell  = globalProps.getStringList("alarm.tel.list", Collections.EMPTY_LIST);
+          alarmTell = new HashSet<String>(alarmList);
+        }
+      }
+
+      logger.info(Arrays.toString(alarmTell.toArray()));
+
+      for(String tel:alarmTell){
+
+        try {
+          byte[] bs = fullMsg.getBytes("ISO8859_1");
+          String u8content =  new String(bs, "UTF-8");
+          logger.info(tel + "--------------" + u8content);
+          ShortMsg.sendMsg(msgUrl.trim(), tel.trim(), u8content, logger);
+          logger.warn("The fail message has send to ->" + tel);
+        }
+        catch (IOException e){
+          logger.info(e.getMessage());
+        }
+      }
+
     }
   }
 

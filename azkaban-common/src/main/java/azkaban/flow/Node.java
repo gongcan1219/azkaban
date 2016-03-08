@@ -31,6 +31,9 @@ public class Node {
   private int level;
   private int expectedRunTimeSec = 1;
   private String type;
+  private int priority = 0;
+  private String alarm;
+  private String author;
 
   private String embeddedFlowId;
 
@@ -59,6 +62,30 @@ public class Node {
 
   public void setType(String type) {
     this.type = type;
+  }
+
+  public int getPriority() {
+    return priority;
+  }
+
+  public void setPriority(int priority) {
+    this.priority = priority;
+  }
+
+  public String getAlarm() {
+    return alarm;
+  }
+
+  public void setAlarm(String alarm) {
+    this.alarm = alarm;
+  }
+
+  public String getAuthor() {
+    return author;
+  }
+
+  public void setAuthor(String author) {
+    this.author = author;
   }
 
   public Point2D getPosition() {
@@ -130,6 +157,14 @@ public class Node {
     node.setType(jobType);
     node.setEmbeddedFlowId(embeddedFlowId);
 
+    Integer priority = (Integer)mapObj.get("priority");
+    if(priority != null){
+      node.setPriority(priority);
+    }
+
+    node.setAlarm((String) mapObj.get("alarm"));
+    node.setAuthor((String) mapObj.get("author"));
+
     Integer expectedRuntime = (Integer) mapObj.get("expectedRuntime");
     if (expectedRuntime != null) {
       node.setExpectedRuntimeSec(expectedRuntime);
@@ -166,6 +201,9 @@ public class Node {
     objMap.put("jobSource", jobSource);
     objMap.put("propSource", propsSource);
     objMap.put("jobType", type);
+    objMap.put("priority", priority);
+    objMap.put("alarm", alarm);
+    objMap.put("author", author);
     if (embeddedFlowId != null) {
       objMap.put("embeddedFlowId", embeddedFlowId);
     }

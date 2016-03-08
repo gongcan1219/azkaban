@@ -24,6 +24,7 @@ import azkaban.flow.Node;
 import azkaban.flow.SpecialJobTypes;
 import azkaban.project.Project;
 import azkaban.utils.TypedMapWrapper;
+import azkaban.utils.ExecutableSort;
 
 public class ExecutableFlowBase extends ExecutableNode {
   public static final String FLOW_ID_PARAM = "flowId";
@@ -134,6 +135,9 @@ public class ExecutableFlowBase extends ExecutableNode {
         executableNodes.put(id, embeddedFlow);
       } else {
         ExecutableNode exNode = new ExecutableNode(node, this);
+        exNode.setPriority(node.getPriority());
+        exNode.setAlarm(node.getAlarm());
+        exNode.setAuthor(node.getAuthor());
         /*if (flow.getLimitHosts() != null && flow.getLimitHosts().size() > 0) {
           exNode.setLimitHosts(flow.getLimitHosts());
         }*/
@@ -193,10 +197,22 @@ public class ExecutableFlowBase extends ExecutableNode {
   public List<String> getStartNodes() {
     if (startNodes == null) {
       startNodes = new ArrayList<String>();
-      for (ExecutableNode node : executableNodes.values()) {
+      /*for (ExecutableNode node : executableNodes.values()) {
         if (node.getInNodes().isEmpty()) {
           startNodes.add(node.getId());
         }
+      }*/
+
+      Map<String, Integer> tmpNodeList = new HashMap<String, Integer>();
+      for (ExecutableNode node: executableNodes.values()) {
+        if (node.getInNodes().isEmpty()) {
+          //排序priority
+          tmpNodeList.put(node.getId(),node.getPriority());
+        }
+      }
+      tmpNodeList =  ExecutableSort.sortByValue(tmpNodeList);
+      for(Map.Entry<String, Integer> entry : tmpNodeList.entrySet()) {
+        startNodes.add(entry.getKey());
       }
     }
 

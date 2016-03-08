@@ -21,20 +21,14 @@ import java.io.FileFilter;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.lang.Thread.State;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 
+import azkaban.utils.hash.ConsistentHash;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
@@ -499,9 +493,11 @@ public class FlowRunnerManager implements EventListener,
     FlowRunner runner =
         new FlowRunner(flow, executorLoader, projectLoader, jobtypeManager);
     runner.setFlowWatcher(watcher)
-        .setJobLogSettings(jobLogChunkSize, jobLogNumFiles)
-        .setValidateProxyUser(validateProxyUser)
-        .setNumJobThreads(numJobThreads).addListener(this);
+            .setJobLogSettings(jobLogChunkSize, jobLogNumFiles)
+            .setValidateProxyUser(validateProxyUser)
+            .setGlobalProps(globalProps)
+            .setConsistentHash()
+            .setNumJobThreads(numJobThreads).addListener(this);
 
     configureFlowLevelMetrics(runner);
 

@@ -1902,6 +1902,7 @@ public class ExecutorManager extends EventHandler implements
         if (limitExecutors.size() < 1) {
           limitExecutors.addAll(availableExecutors);
         }
+        logger.info(String.format("limit executor %s", Arrays.toString(limitExecutors.toArray())));
         //Executor selectedExecutor = selectExecutor(exflow, availableExecutors);
         Executor selectedExecutor = selectExecutor(exflow, limitExecutors);
         if (selectedExecutor != null) {

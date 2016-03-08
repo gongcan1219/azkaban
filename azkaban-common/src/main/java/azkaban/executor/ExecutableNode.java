@@ -40,6 +40,9 @@ public class ExecutableNode {
   public static final String JOB_SOURCE_PARAM = "jobSource";
   public static final String OUTPUT_PROPS_PARAM = "outputProps";
   //public static final String LIMIT_HOSTS = "limitHosts";
+  public static final String PRIORITY= "priority";
+  public static final String ALARM = "alarm";
+  public static final String AUTHOR = "author";
 
   private String id;
   private String type = null;
@@ -47,6 +50,10 @@ public class ExecutableNode {
   private long startTime = -1;
   private long endTime = -1;
   private long updateTime = -1;
+
+  private int priority= 0;
+  private String alarm = null;
+  private String author = null;
 
   // Path to Job File
   private String jobSource;
@@ -114,6 +121,30 @@ public class ExecutableNode {
 
   public void setId(String id) {
     this.id = id;
+  }
+
+  public int getPriority() {
+    return priority;
+  }
+
+  public void setPriority(int priority) {
+    this.priority = priority;
+  }
+
+  public String getAlarm() {
+    return alarm;
+  }
+
+  public void setAlarm(String alarm) {
+    this.alarm = alarm;
+  }
+
+  public String getAuthor() {
+    return author;
+  }
+
+  public void setAuthor(String author) {
+    this.author = author;
   }
 
   public Status getStatus() {
@@ -288,6 +319,10 @@ public class ExecutableNode {
     objMap.put(TYPE_PARAM, type);
     objMap.put(ATTEMPT_PARAM, attempt);
 
+    objMap.put(PRIORITY, priority);
+    objMap.put(ALARM, alarm);
+    objMap.put(AUTHOR, author);
+
     if (inNodes != null && !inNodes.isEmpty()) {
       objMap.put(INNODES_PARAM, inNodes);
     }
@@ -330,6 +365,9 @@ public class ExecutableNode {
     this.endTime = wrappedMap.getLong(ENDTIME_PARAM);
     this.updateTime = wrappedMap.getLong(UPDATETIME_PARAM);
     this.attempt = wrappedMap.getInt(ATTEMPT_PARAM, 0);
+    this.priority= wrappedMap.getInt(PRIORITY);
+    this.alarm = wrappedMap.getString(ALARM);
+    this.author = wrappedMap.getString(AUTHOR);
 
     this.inNodes = new HashSet<String>();
     this.inNodes.addAll(wrappedMap.getStringCollection(INNODES_PARAM,
@@ -464,5 +502,9 @@ public class ExecutableNode {
 
   public long getRetryBackoff() {
     return inputProps.getLong("retry.backoff", 0);
+  }
+
+  public List<String> getAlarmTells () {
+    return  inputProps.getStringList("flow.alarm.tells", Collections.<String> emptyList());
   }
 }
