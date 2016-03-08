@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import azkaban.flow.CommonJobProperties;
 import azkaban.flow.Node;
 import azkaban.utils.Props;
 import azkaban.utils.PropsUtils;
@@ -452,5 +453,9 @@ public class ExecutableNode {
 
   public long getRetryBackoff() {
     return inputProps.getLong("retry.backoff", 0);
+  }
+
+  public List<String> getLimitHosts() {
+    return inputProps.getStringList(CommonJobProperties.FLOW_LIMIT_HOSTS, Collections.<String> emptyList());
   }
 }

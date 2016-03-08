@@ -442,6 +442,7 @@ public class ExecutorManager extends EventHandler implements
       for (Pair<ExecutionReference, ExecutableFlow> pair : retrievedExecutions) {
         queuedFlows.enqueue(pair.getSecond(), pair.getFirst());
       }
+      logger.info(String.format("queuedFlows size %s",queuedFlows.size()));
     }
   }
 
