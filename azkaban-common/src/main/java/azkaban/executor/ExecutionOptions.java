@@ -16,15 +16,11 @@
 
 package azkaban.executor;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import azkaban.executor.mail.DefaultMailCreator;
 import azkaban.utils.TypedMapWrapper;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Execution options for submitted flows and scheduled flows
@@ -53,6 +49,7 @@ public class ExecutionOptions {
   private static final String SUCCESS_EMAILS_OVERRIDE = "successEmailsOverride";
   private static final String MAIL_CREATOR = "mailCreator";
   private static final String MEMORY_CHECK = "memoryCheck";
+  private static final String LIMIT_HOSTS = "limitHosts";
 
   private boolean notifyOnFirstFailure = true;
   private boolean notifyOnLastFailure = false;
@@ -60,6 +57,7 @@ public class ExecutionOptions {
   private boolean successEmailsOverride = false;
   private ArrayList<String> failureEmails = new ArrayList<String>();
   private ArrayList<String> successEmails = new ArrayList<String>();
+  private ArrayList<String> limitHosts = new ArrayList<String>();
 
   private Integer pipelineLevel = null;
   private Integer pipelineExecId = null;
@@ -115,6 +113,14 @@ public class ExecutionOptions {
 
   public List<String> getSuccessEmails() {
     return successEmails;
+  }
+
+  public ArrayList<String> getLimitHosts() {
+    return limitHosts;
+  }
+
+  public void setLimitHosts(Collection<String> limitHosts) {
+    this.limitHosts = new ArrayList<String>(limitHosts);
   }
 
   public boolean getNotifyOnFirstFailure() {
@@ -229,6 +235,9 @@ public class ExecutionOptions {
       options.flowParameters = new HashMap<String, String>();
       options.flowParameters.putAll(wrapper
           .<String, String> getMap(FLOW_PARAMETERS));
+      if (options.flowParameters.containsKey(LIMIT_HOSTS)) {
+        options.setLimitHosts(Arrays.asList(StringUtils.split(options.flowParameters.get(LIMIT_HOSTS), "\\s*,\\s*|\\s*;\\s*|\\s+")));
+      }
     }
     // Failure notification
     options.notifyOnFirstFailure =

@@ -15,13 +15,7 @@
  */
 package azkaban.executor;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import azkaban.flow.Flow;
 import azkaban.flow.FlowProps;
@@ -110,6 +104,9 @@ public class ExecutableFlow extends ExecutableFlowBase {
     }
     if (flow.getFailureEmails() != null) {
       executionOptions.setFailureEmails(flow.getFailureEmails());
+    }
+    if (flow.getLimitHosts() != null) {
+      executionOptions.setLimitHosts(flow.getLimitHosts());
     }
   }
 
@@ -285,9 +282,6 @@ public class ExecutableFlow extends ExecutableFlowBase {
       logger.info("flow pros \t" + e.getKey() + "\t" + e.getValue());
     }
     logger.info("flow id => " + this.getId());
-
-    for (FlowProps f : this.getFlowProps()) {
-      logger.info("pros -> " + f.getProps().toString());
-    }
+    logger.info("pros -> " + Arrays.toString(executionOptions.getLimitHosts().toArray()));
   }
 }

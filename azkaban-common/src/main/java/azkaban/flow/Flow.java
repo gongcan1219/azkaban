@@ -16,13 +16,7 @@
 
 package azkaban.flow;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import azkaban.executor.mail.DefaultMailCreator;
 
@@ -41,6 +35,8 @@ public class Flow {
   private HashMap<String, Set<Edge>> inEdges = new HashMap<String, Set<Edge>>();
   private HashMap<String, FlowProps> flowProps =
       new HashMap<String, FlowProps>();
+
+  private List<String> limitHosts = new ArrayList<String>();
 
   private List<String> failureEmail = new ArrayList<String>();
   private List<String> successEmail = new ArrayList<String>();
@@ -132,6 +128,14 @@ public class Flow {
     failureEmail.addAll(emails);
   }
 
+  public List<String> getLimitHosts() {
+    return limitHosts;
+  }
+
+  public void setLimitHosts(Collection<String> limitHosts) {
+    this.limitHosts = new ArrayList<String>(limitHosts);
+  }
+
   public int getNumLevels() {
     return numLevels;
   }
@@ -165,6 +169,9 @@ public class Flow {
   public void addAllFlowProperties(Collection<FlowProps> props) {
     for (FlowProps prop : props) {
       flowProps.put(prop.getSource(), prop);
+      if (prop.getProps() != null) {
+        limitHosts.addAll(prop.getProps().getStringList(CommonJobProperties.FLOW_LIMIT_HOSTS, Collections.<String> emptyList()));
+      }
     }
   }
 
