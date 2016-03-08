@@ -496,7 +496,7 @@ public class FlowRunnerManager implements EventListener,
             .setJobLogSettings(jobLogChunkSize, jobLogNumFiles)
             .setValidateProxyUser(validateProxyUser)
             .setGlobalProps(globalProps)
-            .setConsistentHash()
+            /*.setConsistentHash()*/
             .setNumJobThreads(numJobThreads).addListener(this);
 
     configureFlowLevelMetrics(runner);
