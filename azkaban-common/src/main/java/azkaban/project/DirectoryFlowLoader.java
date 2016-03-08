@@ -164,7 +164,7 @@ public class DirectoryFlowLoader implements ProjectValidator {
 
         FlowProps flowProps = new FlowProps(parent);
         flowPropsList.add(flowProps);
-        logger.info(String.format("property file path %s, file name %s", file.getPath(), file.getName()));
+        logger.info(String.format("property file path %s, file name %s, props %s", file.getPath(), file.getName(), flowProps.getProps().toString()));
       } catch (IOException e) {
         errors.add("Error loading properties " + file.getName() + ":"
             + e.getMessage());

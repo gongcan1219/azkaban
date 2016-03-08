@@ -169,8 +169,8 @@ public class Flow {
   public void addAllFlowProperties(Collection<FlowProps> props) {
     for (FlowProps prop : props) {
       flowProps.put(prop.getSource(), prop);
-      System.out.println(String.format("flow %s add props %s", id, prop.getProps().toString()));
       if (prop.getProps() != null) {
+        System.out.println(String.format("flow %s add props %s", id, prop.getProps().toString()));
         limitHosts.addAll(prop.getProps().getStringList(CommonJobProperties.FLOW_LIMIT_HOSTS, Collections.<String> emptyList()));
       }
     }
