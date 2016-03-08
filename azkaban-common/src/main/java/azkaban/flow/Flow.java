@@ -259,6 +259,10 @@ public class Flow {
       flowObj.put("metadata", metadata);
     }
 
+    if (limitHosts != null && limitHosts.size() > 0 ) {
+      flowObj.put("limitHosts", limitHosts);
+    }
+
     return flowObj;
   }
 
@@ -335,6 +339,9 @@ public class Flow {
     flow.successEmail = (List<String>) flowObject.get("success.email");
     if (flowObject.containsKey("mailCreator")) {
       flow.mailCreator = flowObject.get("mailCreator").toString();
+    }
+    if (flowObject.containsKey("limitHosts")) {
+      flow.setLimitHosts((List<String>) flowObject.get("limitHosts"));
     }
     return flow;
   }

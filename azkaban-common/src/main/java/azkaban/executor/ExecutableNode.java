@@ -46,6 +46,7 @@ public class ExecutableNode {
   public static final String PROPS_SOURCE_PARAM = "propSource";
   public static final String JOB_SOURCE_PARAM = "jobSource";
   public static final String OUTPUT_PROPS_PARAM = "outputProps";
+  public static final String LIMIT_HOSTS = "limitHosts";
 
   private String id;
   private String type = null;
@@ -60,6 +61,7 @@ public class ExecutableNode {
   private String propsSource;
   private Set<String> inNodes = new HashSet<String>();
   private Set<String> outNodes = new HashSet<String>();
+  private List<String> limitHosts = new ArrayList<String>();
 
   private Props inputProps;
   private Props outputProps;
@@ -82,7 +84,7 @@ public class ExecutableNode {
 
   public ExecutableNode(Node node, ExecutableFlowBase parent) {
     this(node.getId(), node.getType(), node.getJobSource(), node
-        .getPropsSource(), parent);
+            .getPropsSource(), parent);
   }
 
   public ExecutableNode(String id, String type, String jobSource,
@@ -175,6 +177,14 @@ public class ExecutableNode {
 
   public Set<String> getInNodes() {
     return inNodes;
+  }
+
+  public void setLimitHosts(Collection<String> limitHosts) {
+    this.limitHosts = new ArrayList<String>(limitHosts);
+  }
+
+  public List<String> getLimitHosts() {
+    return limitHosts;
   }
 
   public boolean hasJobSource() {
@@ -303,6 +313,10 @@ public class ExecutableNode {
       objMap.put(OUTPUT_PROPS_PARAM, PropsUtils.toStringMap(outputProps, true));
     }
 
+    if (limitHosts != null && limitHosts.size() > 0) {
+      objMap.put(LIMIT_HOSTS, limitHosts);
+    }
+
     if (pastAttempts != null) {
       ArrayList<Object> attemptsList =
           new ArrayList<Object>(pastAttempts.size());
@@ -340,6 +354,9 @@ public class ExecutableNode {
     if (outputProps != null) {
       this.outputProps = new Props(null, outputProps);
     }
+
+    this.limitHosts = new ArrayList<String>();
+    this.limitHosts.addAll(wrappedMap.getStringCollection(LIMIT_HOSTS, Collections.<String> emptyList()));
 
     Collection<Object> pastAttempts =
         wrappedMap.<Object> getCollection(PASTATTEMPTS_PARAM);
@@ -453,9 +470,5 @@ public class ExecutableNode {
 
   public long getRetryBackoff() {
     return inputProps.getLong("retry.backoff", 0);
-  }
-
-  public List<String> getLimitHosts() {
-    return inputProps.getStringList(CommonJobProperties.FLOW_LIMIT_HOSTS, Collections.<String> emptyList());
   }
 }
