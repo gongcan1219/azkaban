@@ -227,6 +227,8 @@ public class ExecuteFlowAction implements TriggerAction {
           + flowName);
     }
 
+    logger.info(String.format("flow %s", Arrays.toString(flow.getLimitHosts().toArray())));
+
     ExecutableFlow exflow = new ExecutableFlow(project, flow);
     exflow.setSubmitUser(submitUser);
     exflow.addAllProxyUsers(project.getProxyUsers());

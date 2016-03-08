@@ -103,6 +103,8 @@ public class ExecutableFlow extends ExecutableFlowBase {
     executionOptions = new ExecutionOptions();
     executionOptions.setMailCreator(flow.getMailCreator());
 
+    logger.info(String.format("Are you kidding me ? %s", Arrays.toString(flow.getLimitHosts().toArray())));
+
     if (flow.getSuccessEmails() != null) {
       executionOptions.setSuccessEmails(flow.getSuccessEmails());
     }
