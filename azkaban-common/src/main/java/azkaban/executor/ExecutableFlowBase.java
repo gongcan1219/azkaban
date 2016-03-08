@@ -304,7 +304,7 @@ public class ExecutableFlowBase extends ExecutableNode {
       this.flowProps.put(source, flowProps);
     }
 
-    this.limitHosts = (ArrayList<String>) flowObjMap.getStringCollection(LIMIT_HOSTS, Collections.<String> emptyList());
+    this.setLimitHosts(flowObjMap.getStringCollection(LIMIT_HOSTS, Collections.<String> emptyList()));
   }
 
   public Map<String, Object> toUpdateObject(long lastUpdateTime) {
