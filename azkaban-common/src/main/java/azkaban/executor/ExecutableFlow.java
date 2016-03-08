@@ -288,7 +288,7 @@ public class ExecutableFlow extends ExecutableFlowBase {
       logger.info("flow pros \t" + e.getKey() + "\t" + e.getValue());
     }
     logger.info("flow id => " + this.getId());
-    logger.info("pros -> " + Arrays.toString(executionOptions.getLimitHosts().toArray()));
+    //logger.info("pros -> " + Arrays.toString(executionOptions.getLimitHosts().toArray()));
 
     //logger.info(String.format("hosts %s",Arrays.toString(this.getLimitHosts().toArray())));
   }
