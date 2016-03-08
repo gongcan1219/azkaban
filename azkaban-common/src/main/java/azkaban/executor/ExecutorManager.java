@@ -987,9 +987,9 @@ public class ExecutorManager extends EventHandler implements
           options = new ExecutionOptions();
         }
 
-        for (Map.Entry<String,Object> f : exflow.toObject().entrySet()) {
+        /*for (Map.Entry<String,Object> f : exflow.toObject().entrySet()) {
           logger.info(String.format("before update flow %s pros key %s pros val %s", exflow.getId(), f.getKey(), f.getValue()));
-        }
+        }*/
 
         if (options.getDisabledJobs() != null) {
           applyDisabledJobs(options.getDisabledJobs(), exflow);
@@ -1029,9 +1029,9 @@ public class ExecutorManager extends EventHandler implements
         // this call.
         executorLoader.uploadExecutableFlow(exflow);
 
-        for (Map.Entry<String,Object> f : exflow.toObject().entrySet()) {
+        /*for (Map.Entry<String,Object> f : exflow.toObject().entrySet()) {
           logger.info(String.format("after update flow %s pros key %s pros val %s", exflow.getId(), f.getKey(), f.getValue()));
-        }
+        }*/
 
         // We create an active flow reference in the datastore. If the upload
         // fails, we remove the reference.
@@ -1760,8 +1760,8 @@ public class ExecutorManager extends EventHandler implements
       new Pair<ExecutionReference, ExecutableFlow>(reference, exflow));
 
     logger.info(String.format(
-      "Successfully dispatched exec %d with error count %d",
-      exflow.getExecutionId(), reference.getNumErrors()));
+      "Successfully dispatched exec %d in %s with error count %d",
+      exflow.getExecutionId(), choosenExecutor, reference.getNumErrors()));
   }
 
   /*
@@ -1887,16 +1887,34 @@ public class ExecutorManager extends EventHandler implements
       ExecutableFlow exflow, Set<Executor> availableExecutors)
       throws ExecutorManagerException {
       synchronized (exflow) {
-        Executor selectedExecutor = selectExecutor(exflow, availableExecutors);
+        Set<String> hosts = new HashSet<String>();
+        if (exflow.getLimitHosts() != null && exflow.getLimitHosts().size() > 0) {
+          hosts.addAll(exflow.getLimitHosts());
+        }
+        Set<Executor> limitExecutors = new HashSet<Executor>();
+        if (hosts.size() > 0) {
+          for (Executor e : availableExecutors) {
+            if (hosts.contains(e.getHost())) {
+              limitExecutors.add(e);
+            }
+          }
+        }
+        if (limitExecutors.size() < 1) {
+          limitExecutors.addAll(availableExecutors);
+        }
+        //Executor selectedExecutor = selectExecutor(exflow, availableExecutors);
+        Executor selectedExecutor = selectExecutor(exflow, limitExecutors);
         if (selectedExecutor != null) {
           try {
             dispatch(reference, exflow, selectedExecutor);
           } catch (ExecutorManagerException e) {
             logger.warn(String.format(
-              "Executor %s responded with exception for exec: %d",
-              selectedExecutor, exflow.getExecutionId()), e);
+                    "Executor %s responded with exception for exec: %d",
+                    selectedExecutor, exflow.getExecutionId()), e);
+            /*handleDispatchExceptionCase(reference, exflow, selectedExecutor,
+              availableExecutors);*/
             handleDispatchExceptionCase(reference, exflow, selectedExecutor,
-              availableExecutors);
+                    limitExecutors);
           }
         } else {
           handleNoExecutorSelectedCase(reference, exflow);
@@ -1944,8 +1962,7 @@ public class ExecutorManager extends EventHandler implements
     /* Choose Executor for exflow among the available executors */
     private Executor selectExecutor(ExecutableFlow exflow,
       Set<Executor> availableExecutors) {
-      /*logger.info("check hosts -> " + Arrays.toString(exflow.getExecutionOptions().getLimitHosts().toArray()));*/
-      exflow.printFlowPros();
+      //exflow.printFlowPros();
       Executor choosenExecutor =
         getUserSpecifiedExecutor(exflow.getExecutionOptions(),
           exflow.getExecutionId());

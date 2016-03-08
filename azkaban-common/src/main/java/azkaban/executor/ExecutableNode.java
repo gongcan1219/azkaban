@@ -39,7 +39,7 @@ public class ExecutableNode {
   public static final String PROPS_SOURCE_PARAM = "propSource";
   public static final String JOB_SOURCE_PARAM = "jobSource";
   public static final String OUTPUT_PROPS_PARAM = "outputProps";
-  public static final String LIMIT_HOSTS = "limitHosts";
+  //public static final String LIMIT_HOSTS = "limitHosts";
 
   private String id;
   private String type = null;
@@ -54,7 +54,7 @@ public class ExecutableNode {
   private String propsSource;
   private Set<String> inNodes = new HashSet<String>();
   private Set<String> outNodes = new HashSet<String>();
-  private List<String> limitHosts = new ArrayList<String>();
+  //private List<String> limitHosts = new ArrayList<String>();
 
   private Props inputProps;
   private Props outputProps;
@@ -306,9 +306,9 @@ public class ExecutableNode {
       objMap.put(OUTPUT_PROPS_PARAM, PropsUtils.toStringMap(outputProps, true));
     }
 
-    if (limitHosts != null && limitHosts.size() > 0) {
+    /*if (limitHosts != null && limitHosts.size() > 0) {
       objMap.put(LIMIT_HOSTS, limitHosts);
-    }
+    }*/
 
     if (pastAttempts != null) {
       ArrayList<Object> attemptsList =

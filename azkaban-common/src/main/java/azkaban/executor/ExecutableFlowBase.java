@@ -31,7 +31,7 @@ public class ExecutableFlowBase extends ExecutableNode {
   public static final String PROPERTIES_PARAM = "properties";
   public static final String SOURCE_PARAM = "source";
   public static final String INHERITED_PARAM = "inherited";
-  public static final String LIMIT_HOSTS = "limit_hosts";
+  public static final String LIMIT_HOSTS = "limitHosts";
 
   private HashMap<String, ExecutableNode> executableNodes =
       new HashMap<String, ExecutableNode>();
