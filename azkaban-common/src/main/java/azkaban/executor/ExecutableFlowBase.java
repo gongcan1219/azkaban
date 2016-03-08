@@ -197,13 +197,13 @@ public class ExecutableFlowBase extends ExecutableNode {
   public List<String> getStartNodes() {
     if (startNodes == null) {
       startNodes = new ArrayList<String>();
-      for (ExecutableNode node : executableNodes.values()) {
+      /*for (ExecutableNode node : executableNodes.values()) {
         if (node.getInNodes().isEmpty()) {
           startNodes.add(node.getId());
         }
-      }
+      }*/
 
-      /*Map<String, Integer> tmpNodeList = new HashMap<String, Integer>();
+      Map<String, Integer> tmpNodeList = new HashMap<String, Integer>();
       for (ExecutableNode node: executableNodes.values()) {
         if (node.getInNodes().isEmpty()) {
           //排序priority
@@ -213,7 +213,7 @@ public class ExecutableFlowBase extends ExecutableNode {
       tmpNodeList =  ExecutableSort.sortByValue(tmpNodeList);
       for(Map.Entry<String, Integer> entry : tmpNodeList.entrySet()) {
         startNodes.add(entry.getKey());
-      }*/
+      }
     }
 
     return startNodes;
