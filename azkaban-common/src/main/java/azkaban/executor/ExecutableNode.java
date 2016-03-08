@@ -350,7 +350,7 @@ public class ExecutableNode {
 
     //this.limitHosts = new ArrayList<String>();
     this.limitHosts.addAll(wrappedMap.getStringCollection(LIMIT_HOSTS, Collections.<String> emptyList()));
-    System.out.println(String.format("creator hosts %s", Arrays.asList(limitHosts)));
+    //System.out.println(String.format("creator hosts %s", Arrays.asList(limitHosts)));
 
     Collection<Object> pastAttempts =
         wrappedMap.<Object> getCollection(PASTATTEMPTS_PARAM);

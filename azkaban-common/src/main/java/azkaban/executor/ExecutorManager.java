@@ -650,7 +650,7 @@ public class ExecutorManager extends EventHandler implements
       int skip, int size) throws ExecutorManagerException {
     List<ExecutableFlow> flows =
         executorLoader.fetchFlowHistory(projContain, flowContain, userContain,
-            status, begin, end, skip, size);
+                status, begin, end, skip, size);
     return flows;
   }
 
@@ -987,6 +987,10 @@ public class ExecutorManager extends EventHandler implements
           options = new ExecutionOptions();
         }
 
+        for (Map.Entry<String,Object> f : exflow.toObject().entrySet()) {
+          logger.info(String.format("before update flow %s pros key %s pros val %s", exflow.getId(), f.getKey(), f.getValue()));
+        }
+
         if (options.getDisabledJobs() != null) {
           applyDisabledJobs(options.getDisabledJobs(), exflow);
         }
@@ -1024,6 +1028,10 @@ public class ExecutorManager extends EventHandler implements
         // The exflow id is set by the loader. So it's unavailable until after
         // this call.
         executorLoader.uploadExecutableFlow(exflow);
+
+        for (Map.Entry<String,Object> f : exflow.toObject().entrySet()) {
+          logger.info(String.format("after update flow %s pros key %s pros val %s", exflow.getId(), f.getKey(), f.getValue()));
+        }
 
         // We create an active flow reference in the datastore. If the upload
         // fails, we remove the reference.

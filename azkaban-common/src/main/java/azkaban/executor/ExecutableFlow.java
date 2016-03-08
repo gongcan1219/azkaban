@@ -103,7 +103,7 @@ public class ExecutableFlow extends ExecutableFlowBase {
     executionOptions = new ExecutionOptions();
     executionOptions.setMailCreator(flow.getMailCreator());
 
-    logger.info(String.format("Are you kidding me ? %s", Arrays.toString(flow.getLimitHosts().toArray())));
+    //logger.info(String.format("Are you kidding me ? %s", Arrays.toString(flow.getLimitHosts().toArray())));
 
     if (flow.getSuccessEmails() != null) {
       executionOptions.setSuccessEmails(flow.getSuccessEmails());
@@ -290,6 +290,6 @@ public class ExecutableFlow extends ExecutableFlowBase {
     logger.info("flow id => " + this.getId());
     logger.info("pros -> " + Arrays.toString(executionOptions.getLimitHosts().toArray()));
 
-    logger.info(String.format("hosts %s",Arrays.asList(this.getLimitHosts())));
+    logger.info(String.format("hosts %s",Arrays.toString(this.getLimitHosts().toArray())));
   }
 }
