@@ -201,6 +201,7 @@ public class DirectoryFlowLoader implements ProjectValidator {
             node.setPriority(prop.getInt("priority",0));
             node.setAlarm(prop.getString("alarm", null));
             node.setAuthor(prop.getString("author", null));
+            node.setComment(prop.getString("comment", null));
 
             node.setJobSource(relative);
             if (parent != null) {

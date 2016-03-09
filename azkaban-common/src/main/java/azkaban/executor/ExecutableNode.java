@@ -43,6 +43,7 @@ public class ExecutableNode {
   public static final String PRIORITY= "priority";
   public static final String ALARM = "alarm";
   public static final String AUTHOR = "author";
+  public static final String COMMENT = "comment";
 
   private String id;
   private String type = null;
@@ -54,6 +55,7 @@ public class ExecutableNode {
   private int priority= 0;
   private String alarm = null;
   private String author = null;
+  private String comment = null;
 
   // Path to Job File
   private String jobSource;
@@ -145,6 +147,14 @@ public class ExecutableNode {
 
   public void setAuthor(String author) {
     this.author = author;
+  }
+
+  public String getComment() {
+    return comment;
+  }
+
+  public void setComment(String comment) {
+    this.comment = comment;
   }
 
   public Status getStatus() {
@@ -322,6 +332,7 @@ public class ExecutableNode {
     objMap.put(PRIORITY, priority);
     objMap.put(ALARM, alarm);
     objMap.put(AUTHOR, author);
+    objMap.put(COMMENT, comment);
 
     if (inNodes != null && !inNodes.isEmpty()) {
       objMap.put(INNODES_PARAM, inNodes);
@@ -368,6 +379,7 @@ public class ExecutableNode {
     this.priority= wrappedMap.getInt(PRIORITY);
     this.alarm = wrappedMap.getString(ALARM);
     this.author = wrappedMap.getString(AUTHOR);
+    this.comment = wrappedMap.getString(COMMENT);
 
     this.inNodes = new HashSet<String>();
     this.inNodes.addAll(wrappedMap.getStringCollection(INNODES_PARAM,

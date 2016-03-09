@@ -34,6 +34,7 @@ public class Node {
   private int priority = 0;
   private String alarm;
   private String author;
+  private String comment;
 
   private String embeddedFlowId;
 
@@ -86,6 +87,14 @@ public class Node {
 
   public void setAuthor(String author) {
     this.author = author;
+  }
+
+  public String getComment() {
+    return comment;
+  }
+
+  public void setComment(String comment) {
+    this.comment = comment;
   }
 
   public Point2D getPosition() {
@@ -164,6 +173,7 @@ public class Node {
 
     node.setAlarm((String) mapObj.get("alarm"));
     node.setAuthor((String) mapObj.get("author"));
+    node.setComment((String) mapObj.get("comment"));
 
     Integer expectedRuntime = (Integer) mapObj.get("expectedRuntime");
     if (expectedRuntime != null) {
@@ -204,6 +214,7 @@ public class Node {
     objMap.put("priority", priority);
     objMap.put("alarm", alarm);
     objMap.put("author", author);
+    objMap.put("comment", comment);
     if (embeddedFlowId != null) {
       objMap.put("embeddedFlowId", embeddedFlowId);
     }

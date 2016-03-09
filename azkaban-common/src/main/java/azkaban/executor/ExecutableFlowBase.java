@@ -138,6 +138,7 @@ public class ExecutableFlowBase extends ExecutableNode {
         exNode.setPriority(node.getPriority());
         exNode.setAlarm(node.getAlarm());
         exNode.setAuthor(node.getAuthor());
+        exNode.setComment(node.getComment());
         /*if (flow.getLimitHosts() != null && flow.getLimitHosts().size() > 0) {
           exNode.setLimitHosts(flow.getLimitHosts());
         }*/
