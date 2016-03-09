@@ -303,6 +303,18 @@ public class MockExecutorLoader implements ExecutorLoader {
   }
 
   @Override
+  public Executor addUpdateExecutor(String host, int port)
+          throws ExecutorManagerException {
+    Executor executor = null;
+    if (fetchExecutor(host, port) == null) {
+      executorIdCounter++;
+      executor = new Executor(executorIdCounter, host, port, true);
+      executors.add(executor);
+    }
+    return executor;
+  }
+
+  @Override
   public void postExecutorEvent(Executor executor, EventType type, String user,
     String message) throws ExecutorManagerException {
     ExecutorLogEvent event =
@@ -330,6 +342,19 @@ public class MockExecutorLoader implements ExecutorLoader {
     Executor oldExecutor = fetchExecutor(executor.getId());
     executors.remove(oldExecutor);
     executors.add(executor);
+  }
+
+  @Override
+  public void removeExecutor(String host, int port)
+          throws ExecutorManagerException {
+    for (Executor executor : executors) {
+      if (executor.getHost().equals(host) && executor.getPort() == port) {
+        Executor oldExecutor = fetchExecutor(executor.getId());
+        executor.setActive(Boolean.TRUE);
+        executors.remove(oldExecutor);
+        executors.add(executor);
+      }
+    }
   }
 
   @Override

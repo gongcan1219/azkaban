@@ -927,7 +927,7 @@ public class JdbcExecutorLoader extends AbstractJdbcLoader implements
     QueryRunner runner = createQueryRunner();
     try {
       int rows =
-              runner.update(UPDATE, false, host, port);
+              runner.update(UPDATE, Boolean.TRUE, host, port);
       if (rows == 0) {
         throw new ExecutorManagerException(String.format("No executor with host : %s port : %s", host, port));
       }
