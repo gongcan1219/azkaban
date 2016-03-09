@@ -457,11 +457,21 @@ public class Utils {
     return sizeInKb;
   }
 
-  public static String getHostIP() throws UnknownHostException{
-    return InetAddress.getLocalHost().getHostAddress();
+  public static String getHostIP(){
+    try {
+      return InetAddress.getLocalHost().getHostAddress();
+    } catch (UnknownHostException e) {
+      e.printStackTrace();
+      return "localhost";
+    }
   }
 
-  public static String getHostName() throws UnknownHostException{
-    return InetAddress.getLocalHost().getHostName();
+  public static String getHostName(){
+    try {
+      return InetAddress.getLocalHost().getHostName();
+    } catch (UnknownHostException e) {
+      e.printStackTrace();
+      return "localhost";
+    }
   }
 }

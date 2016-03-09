@@ -173,13 +173,7 @@ public class AzkabanProcess {
       }
     }
 
-    String localHost = "127.0.0.1";
-    try {
-      localHost = Utils.getHostIP();
-      logger.info("ip : " + localHost);
-    } catch (UnknownHostException e) {
-      logger.warn(e.getStackTrace());
-    }
+    String localHost = Utils.getHostIP();
 
     //剔除ssh本机
     if (host != null) {
