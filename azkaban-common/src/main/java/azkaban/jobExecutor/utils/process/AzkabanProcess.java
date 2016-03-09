@@ -188,7 +188,8 @@ public class AzkabanProcess {
         List<String> cmds = new ArrayList<String>();
         for (String c : cmd) {
           if (!"ssh".equals(c.toLowerCase()) && !host.equals(c)) {
-            cmds.add(c);
+            //cmds.add(c);
+            cmds.add(c.replaceAll("\"",""));
           }
         }
         host = null;

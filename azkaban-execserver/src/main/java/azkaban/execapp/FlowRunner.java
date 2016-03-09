@@ -190,7 +190,7 @@ public class FlowRunner extends EventHandler implements Runnable {
       }
       System.out.println("hosts -> " + Arrays.toString(hosts.toArray()));
     } else {
-      System.out.println("run with single machine");
+      System.out.println("run without jod dispatch");
     }
     return this;
   }
@@ -1108,10 +1108,12 @@ public class FlowRunner extends EventHandler implements Runnable {
       String msgContent = globalProps.getString("alarm.msg.content", "");
       String sign = globalProps.getString("alarm.msg.sign", "");
 
-      String fullMsg = String.format("%s %s %s", msgContent, node.getNestedId(), sign);
+      String fullMsg = null;
 
       if (node.getAuthor() != null) {
-        fullMsg = String.format("%s %s author %s %s", msgContent, node.getNestedId(), node.getAuthor(), sign);
+        fullMsg = String.format("%s %s author:%s %s", msgContent, node.getNestedId(), node.getAuthor(), sign);
+      } else {
+        fullMsg = String.format("%s %s %s", msgContent, node.getNestedId(), sign);
       }
 
       Set<String> alarmTell = new HashSet<String>(alarmList);
@@ -1119,16 +1121,16 @@ public class FlowRunner extends EventHandler implements Runnable {
       try {
         if (node.getAlarmTells() != null && node.getAlarmTells().size() > 0) {
           alarmTell.addAll(node.getAlarmTells());
-          logger.info("add flow alarm tell -> " + Arrays.toString(node.getAlarmTells().toArray()));
+          logger.debug("add flow alarm tell -> " + Arrays.toString(node.getAlarmTells().toArray()));
         }
       } catch (Exception e) {
         logger.warn("check flow alarm error",e);
       }
 
       try {
-        if (node.getAlarm() != null && !"null".equals(node.getAlarm())) {
+        if (node.getAlarm() != null) {
           alarmTell.add(node.getAlarm());
-          logger.info("add job alarm tell -> " + node.getAlarm());
+          logger.debug("add job alarm tell -> " + node.getAlarm());
         }
       } catch (Exception e) {
         logger.warn("check job alarm error",e);
@@ -1139,19 +1141,19 @@ public class FlowRunner extends EventHandler implements Runnable {
         }
       }
 
-      logger.info(Arrays.toString(alarmTell.toArray()));
+      logger.debug(Arrays.toString(alarmTell.toArray()));
 
       for(String tel:alarmTell){
 
         try {
           byte[] bs = fullMsg.getBytes("ISO8859_1");
           String u8content =  new String(bs, "UTF-8");
-          logger.info(tel + "--------------" + u8content);
+          logger.debug(tel + "--------------" + u8content);
           ShortMsg.sendMsg(msgUrl.trim(), tel.trim(), u8content, logger);
-          logger.warn("The fail message has send to ->" + tel);
+          logger.debug("The fail message has send to ->" + tel);
         }
         catch (IOException e){
-          logger.info(e.getMessage());
+          logger.warn(e.getMessage());
         }
       }
 

@@ -39,11 +39,11 @@ public class ShortMsg {
         try {
             response = httpclient.execute(httppost, responseHandler);
         } catch (IOException e) {
-            logger.info(String.format("Are you kidding me ? %s", e.getMessage()), e);
+            logger.warn(String.format("Are you kidding me ? %s", e.getMessage()), e);
         } finally {
             httpclient.getConnectionManager().shutdown();
         }
 
-        logger.info("shortmsg response :"+response);
+        logger.debug("shortmsg response :"+response);
     }
 }
