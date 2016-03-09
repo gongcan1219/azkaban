@@ -42,6 +42,8 @@ public class AzkabanProcessBuilder {
   private int stdErrSnippetSize = 30;
   private int stdOutSnippetSize = 30;
 
+  private String aHost = null;
+
   public AzkabanProcessBuilder(String... command) {
     addArg(command);
   }
@@ -54,6 +56,11 @@ public class AzkabanProcessBuilder {
 
   public AzkabanProcessBuilder setWorkingDir(String dir) {
     this.workingDir = dir;
+    return this;
+  }
+
+  public AzkabanProcessBuilder setAHost(final String aHost) {
+    this.aHost = aHost;
     return this;
   }
 
@@ -105,9 +112,9 @@ public class AzkabanProcessBuilder {
   public AzkabanProcess build() {
     if (isExecuteAsUser) {
       return new AzkabanProcess(cmd, env, workingDir, logger,
-          executeAsUserBinaryPath, effectiveUser);
+          executeAsUserBinaryPath, effectiveUser).initCmd(aHost);
     } else {
-      return new AzkabanProcess(cmd, env, workingDir, logger);
+      return new AzkabanProcess(cmd, env, workingDir, logger).initCmd(aHost);
     }
   }
 

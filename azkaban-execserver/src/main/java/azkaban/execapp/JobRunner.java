@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import azkaban.utils.hash.ConsistentHash;
 import org.apache.log4j.Appender;
 import org.apache.log4j.EnhancedPatternLayout;
 import org.apache.log4j.Layout;
@@ -78,6 +79,8 @@ public class JobRunner extends EventHandler implements Runnable {
 
   private final JobTypeManager jobtypeManager;
 
+  private ConsistentHash<String> consistentHash;
+
   // Used by the job to watch and block against another flow
   private Integer pipelineLevel = null;
   private FlowWatcher watcher = null;
@@ -113,6 +116,14 @@ public class JobRunner extends EventHandler implements Runnable {
     this.flowLogger = flowLogger;
     this.jobLogChunkSize = logFileChuckSize;
     this.jobLogBackupIndex = numLogBackup;
+  }
+
+  public ConsistentHash<String> getConsistentHash() {
+    return consistentHash;
+  }
+
+  public void setConsistentHash(ConsistentHash<String> consistentHash) {
+    this.consistentHash = consistentHash;
   }
 
   public Props getProps() {
@@ -517,9 +528,21 @@ public class JobRunner extends EventHandler implements Runnable {
       }
 
       try {
+        if (consistentHash != null) {
+          //分配主机
+          props.put("ssh.host",consistentHash.getBinFor(this.jobId));
+          logInfo("Maybe assign host : " + props.getString("ssh.host"));
+        } else {
+          logger.info("This job will not be assigned running host localhost");
+        }
         job = jobtypeManager.buildJobExecutor(this.jobId, props, logger);
       } catch (JobTypeManagerException e) {
-        logger.error("Failed to build job type", e);
+        logger.error("Failed to build job type");
+        changeStatus(Status.FAILED);
+        return false;
+      } catch (Exception e) {
+        logger.warn("Unknown error when job start,maybe cause by assign host",e);
+        changeStatus(Status.FAILED);
         return false;
       }
     }

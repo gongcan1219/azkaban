@@ -27,6 +27,8 @@ import java.io.OutputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Random;
@@ -453,5 +455,13 @@ public class Utils {
     }
 
     return sizeInKb;
+  }
+
+  public static String getHostIP() throws UnknownHostException{
+    return InetAddress.getLocalHost().getHostAddress();
+  }
+
+  public static String getHostName() throws UnknownHostException{
+    return InetAddress.getLocalHost().getHostName();
   }
 }

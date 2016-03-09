@@ -20,11 +20,14 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
-import java.util.List;
-import java.util.Map;
+import java.net.UnknownHostException;
+import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import azkaban.utils.Utils;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -44,7 +47,7 @@ public class AzkabanProcess {
   public static String KILL_COMMAND = "kill";
   
   private final String workingDir;
-  private final List<String> cmd;
+  private volatile List<String> cmd;
   private final Map<String, String> env;
   private final Logger logger;
   private final CountDownLatch startupLatch;
@@ -56,6 +59,16 @@ public class AzkabanProcess {
   private boolean isExecuteAsUser = false;
   private String executeAsUserBinary = null;
   private String effectiveUser = null;
+
+  private final String hostMex = "^((\\d|\\w)+@)?(\\d{1,3}.){3}\\d{1,3}$";
+  private final List<String> sEnv = new ArrayList<String>(Arrays.asList("sh","/bin/bash","python","ruby","java","hadoop"));
+
+  private volatile String host = null;
+  private volatile Set<Integer> pids;
+  private volatile String exe = null;
+  private volatile String aHost;
+  private volatile Map<Integer,Integer> pd;
+  private volatile int gid;
 
   public AzkabanProcess(final List<String> cmd, final Map<String, String> env,
       final String workingDir, final Logger logger) {
@@ -136,6 +149,76 @@ public class AzkabanProcess {
       IOUtils.closeQuietly(process.getOutputStream());
       IOUtils.closeQuietly(process.getErrorStream());
     }
+  }
+
+  public AzkabanProcess initCmd(final String aHost){
+    this.aHost = aHost;
+    for (String cm : cmd) {
+      Matcher pm = Pattern.compile(hostMex).matcher(cm);
+      if (pm.find() && host == null) {
+        host = pm.group();
+        logger.info("ssh host : \t" + host);
+        //break;
+      } else {
+        if (!sEnv.contains(cm.toLowerCase()) && host != null && exe == null && (cm.contains("/") || cm.contains("."))) {
+          StringTokenizer scm = new StringTokenizer(cm);
+          while (scm.hasMoreTokens() && exe == null) {
+            String c = scm.nextToken();
+            if (!sEnv.contains(c.toLowerCase()) && exe == null && (c.contains("/") || c.contains("."))) {
+              exe = c;
+            }
+          }
+          logger.info("execute script : " + exe);
+        }
+      }
+    }
+
+    String localHost = "127.0.0.1";
+    try {
+      localHost = Utils.getHostIP();
+      logger.info("ip : " + localHost);
+    } catch (UnknownHostException e) {
+      logger.warn(e.getStackTrace());
+    }
+
+    //剔除ssh本机
+    if (host != null) {
+      if (host.contains(localHost)) {
+        this.logger.warn("ssh localhost : " + host);
+        List<String> cmds = new ArrayList<String>();
+        for (String c : cmd) {
+          if (!"ssh".equals(c.toLowerCase()) && !host.equals(c)) {
+            cmds.add(c);
+          }
+        }
+        host = null;
+        cmd = cmds;
+        logger.info("changed script : " + cmd);
+      }
+    } else if (aHost != null && !aHost.contains(localHost)){
+      //设置代码执行ssh主机
+      List<String> cmds = new ArrayList<String>(Arrays.asList("ssh", aHost));
+
+      for (String c : cmd) {
+        cmds.add(c);
+        if (!sEnv.contains(c.toLowerCase()) && exe == null && (c.contains("/") || c.contains("."))) {
+          StringTokenizer scm = new StringTokenizer(c);
+          while (scm.hasMoreTokens() && exe == null) {
+            String cc = scm.nextToken();
+            if (!sEnv.contains(cc.toLowerCase()) && exe == null && (cc.contains("/") || cc.contains("."))) {
+              exe = cc;
+            }
+          }
+          logger.info("execute script : " + exe);
+        }
+      }
+      host = aHost;
+      cmd = cmds;
+      logger.info("ssh host ->" + "\t" + aHost);
+    } else {
+      logger.info("exe host ->" + "\t" + localHost);
+    }
+    return this;
   }
 
   /**

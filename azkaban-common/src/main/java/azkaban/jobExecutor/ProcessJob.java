@@ -134,14 +134,16 @@ public class ProcessJob extends AbstractProcessJob {
         info("Command: " + command);
         builder =
             new AzkabanProcessBuilder(partitionCommandLine(command))
-                .setEnv(envVars).setWorkingDir(getCwd()).setLogger(getLog())
-                .enableExecuteAsUser().setExecuteAsUserBinaryPath(executeAsUserBinaryPath)
-                .setEffectiveUser(effectiveUser);
+                    .setEnv(envVars).setWorkingDir(getCwd()).setLogger(getLog())
+                    .enableExecuteAsUser().setExecuteAsUserBinaryPath(executeAsUserBinaryPath)
+                    .setEffectiveUser(effectiveUser)
+                    .setAHost(jobProps.getString("ssh.host", null));
       } else {
         info("Command: " + command);
         builder =
             new AzkabanProcessBuilder(partitionCommandLine(command))
-                .setEnv(envVars).setWorkingDir(getCwd()).setLogger(getLog());
+                    .setEnv(envVars).setWorkingDir(getCwd()).setLogger(getLog())
+                    .setAHost(jobProps.getString("ssh.host",null));
       }
 
       if (builder.getEnv().size() > 0) {

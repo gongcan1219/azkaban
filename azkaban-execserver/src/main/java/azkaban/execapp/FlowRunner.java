@@ -845,6 +845,8 @@ public class FlowRunner extends EventHandler implements Runnable {
       jobRunner.setValidatedProxyUsers(proxyUsers);
     }
 
+    jobRunner.setConsistentHash(consistentHash);
+
     jobRunner.setDelayStart(node.getDelayedExecution());
     jobRunner.setLogSettings(logger, jobLogFileSize, jobLogNumFiles);
     jobRunner.addListener(listener);
@@ -1099,7 +1101,7 @@ public class FlowRunner extends EventHandler implements Runnable {
       }
     }
 
-    public synchronized void sendMsg(final ExecutableNode node){
+    private synchronized void sendMsg(final ExecutableNode node){
 
       List<String> alarmList  = globalProps.getStringList("alarm.tel.list", Collections.<String> emptyList());
       String msgUrl = globalProps.getString("alarm.msg.url", "");
