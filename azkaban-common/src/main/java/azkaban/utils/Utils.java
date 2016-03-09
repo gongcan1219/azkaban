@@ -468,10 +468,10 @@ public class Utils {
 
   public static String getHostName(){
     try {
-      return InetAddress.getLocalHost().getHostName();
+      return InetAddress.getLocalHost().getCanonicalHostName();
     } catch (UnknownHostException e) {
       e.printStackTrace();
-      return "localhost";
+      return "unkownHost";
     }
   }
 }

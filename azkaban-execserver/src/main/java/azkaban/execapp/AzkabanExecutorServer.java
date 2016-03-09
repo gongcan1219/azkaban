@@ -512,12 +512,6 @@ public class AzkabanExecutorServer {
    * @return
    */
   public String getExecutorHostPort() {
-    String host = "unkownHost";
-    try {
-      host = InetAddress.getLocalHost().getCanonicalHostName();
-    } catch (Exception e) {
-      logger.error("Failed to fetch LocalHostName");
-    }
-    return host + ":" + props.getInt("executor.port", DEFAULT_PORT_NUMBER);
+    return Utils.getHostName() + ":" + props.getInt("executor.port", DEFAULT_PORT_NUMBER);
   }
 }
