@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.Thread.State;
 import java.net.URI;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -38,6 +39,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import azkaban.utils.Utils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
@@ -194,7 +196,16 @@ public class ExecutorManager extends EventHandler implements
       newExecutors.addAll(executorLoader.fetchActiveExecutors());
     } else if (azkProps.containsKey("executor.port")) {
       // Add local executor, if specified as per properties
-      String executorHost = azkProps.getString("executor.host", "localhost");
+      /*String executorHost = azkProps.getString("executor.host", "localhost");*/
+      String executorHost = azkProps.getString("executor.host");
+      if (executorHost == null) {
+        try {
+          executorHost = Utils.getHostIP();
+        } catch (UnknownHostException e) {
+          executorHost = "localhost";
+          logger.info(e.getMessage());
+        }
+      }
       int executorPort = azkProps.getInt("executor.port");
       logger.info(String.format("Initializing local executor %s:%d",
         executorHost, executorPort));
