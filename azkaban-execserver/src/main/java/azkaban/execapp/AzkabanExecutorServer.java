@@ -156,6 +156,8 @@ public class AzkabanExecutorServer {
 
     try {
       server.start();
+      //auto add executor
+      executionLoader.addUpdateExecutor(Utils.getHostIP(), portNumber);
     } catch (Exception e) {
       logger.warn(e);
       Utils.croak(e.getMessage(), 1);
@@ -268,6 +270,8 @@ public class AzkabanExecutorServer {
   }
 
   public void stopServer() throws Exception {
+    //remove the stop executor
+    executionLoader.removeExecutor(Utils.getHostIP(),props.getInt("executor.port", DEFAULT_PORT_NUMBER));
     server.stop();
     server.destroy();
   }

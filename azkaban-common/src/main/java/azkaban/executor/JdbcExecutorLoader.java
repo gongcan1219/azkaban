@@ -574,8 +574,8 @@ public class JdbcExecutorLoader extends AbstractJdbcLoader implements
       Pair<Props, Props> props =
           runner
               .query(
-                  FetchExecutableJobPropsHandler.FETCH_OUTPUT_PARAM_EXECUTABLE_NODE,
-                  new FetchExecutableJobPropsHandler(), execId, jobId);
+                      FetchExecutableJobPropsHandler.FETCH_OUTPUT_PARAM_EXECUTABLE_NODE,
+                      new FetchExecutableJobPropsHandler(), execId, jobId);
       return props.getFirst();
     } catch (SQLException e) {
       throw new ExecutorManagerException("Error querying job params " + execId
@@ -608,7 +608,7 @@ public class JdbcExecutorLoader extends AbstractJdbcLoader implements
     try {
       List<ExecutableJobInfo> info =
           runner.query(FetchExecutableJobHandler.FETCH_PROJECT_EXECUTABLE_NODE,
-              new FetchExecutableJobHandler(), projectId, jobId, skip, size);
+                  new FetchExecutableJobHandler(), projectId, jobId, skip, size);
       if (info == null || info.isEmpty()) {
         return null;
       }
@@ -903,7 +903,7 @@ public class JdbcExecutorLoader extends AbstractJdbcLoader implements
     try {
       int rows =
         runner.update(UPDATE, executor.getHost(), executor.getPort(),
-          executor.isActive(), executor.getId());
+                executor.isActive(), executor.getId());
       if (rows == 0) {
         throw new ExecutorManagerException("No executor with id :"
           + executor.getId());
@@ -911,6 +911,28 @@ public class JdbcExecutorLoader extends AbstractJdbcLoader implements
     } catch (SQLException e) {
       throw new ExecutorManagerException("Error inactivating executor "
         + executor.getId(), e);
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   *
+   * @see azkaban.executor.ExecutorLoader#removeExecutor(int)
+   */
+  @Override
+  public void removeExecutor(String host, int port) throws ExecutorManagerException {
+    final String UPDATE =
+            "UPDATE executors SET active=? where host=? and port=?";
+
+    QueryRunner runner = createQueryRunner();
+    try {
+      int rows =
+              runner.update(UPDATE, false, host, port);
+      if (rows == 0) {
+        throw new ExecutorManagerException(String.format("No executor with host : %s port : %s", host, port));
+      }
+    } catch (SQLException e) {
+      throw new ExecutorManagerException(String.format("Error inactivating executor host %s port %s", host, port), e);
     }
   }
 
@@ -946,6 +968,30 @@ public class JdbcExecutorLoader extends AbstractJdbcLoader implements
       throw new ExecutorManagerException(String.format("Error adding %s:%d ",
         host, port), e);
     }
+  }
+
+  /**
+   * {@inheritDoc}
+   *
+   * @see azkaban.executor.ExecutorLoader#addExecutor(java.lang.String, int)
+   */
+  @Override
+  public Executor addUpdateExecutor(String host, int port)
+          throws ExecutorManagerException {
+    // verify, if executor already exists
+    Executor executor = fetchExecutor(host, port);
+    if (executor != null) {
+      if (!executor.isActive()) {
+        executor.setActive(true);
+        updateExecutor(executor);
+      }
+    } else {
+      // add new executor
+      addExecutorHelper(host, port);
+      // fetch newly added executor
+      executor = fetchExecutor(host, port);
+    }
+    return executor;
   }
 
   /**

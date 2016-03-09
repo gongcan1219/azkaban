@@ -117,6 +117,35 @@ public interface ExecutorLoader {
   public Executor addExecutor(String host, int port)
     throws ExecutorManagerException;
 
+    /**
+     * <pre>
+     * create or update an executor and insert in executors table.
+     * Note:-
+     * 1. throws an Exception in case of a SQL issue
+     * 2. throws an Exception if a executor with (host, port) already exist
+     * 3. return null when no executor is found with the given executorId
+     * </pre>
+     *
+     * @return Executor
+     * @throws ExecutorManagerException
+     */
+    public Executor addUpdateExecutor(String host, int port)
+            throws ExecutorManagerException;
+
+    /**
+     * <pre>
+     * update an executor and set the active is false.
+     * Note:-
+     * 1. throws an Exception in case of a SQL issue
+     * 2. throws an Exception if a executor with (host, port) not exist
+     * </pre>
+     *
+     * @return Executor
+     * @throws ExecutorManagerException
+     */
+    public void removeExecutor(String host, int port)
+            throws ExecutorManagerException;
+
   /**
    * <pre>
    * create an executor and insert in executors table.
