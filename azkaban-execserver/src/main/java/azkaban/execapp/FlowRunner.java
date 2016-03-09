@@ -1146,10 +1146,10 @@ public class FlowRunner extends EventHandler implements Runnable {
       for(String tel:alarmTell){
 
         try {
-          byte[] bs = fullMsg.getBytes("ISO8859_1");
+          /*byte[] bs = fullMsg.getBytes("ISO8859_1");
           String u8content =  new String(bs, "UTF-8");
-          logger.debug(tel + "--------------" + u8content);
-          ShortMsg.sendMsg(msgUrl.trim(), tel.trim(), u8content, logger);
+          logger.debug(tel + "--------------" + u8content);*/
+          ShortMsg.sendMsg(msgUrl.trim(), tel.trim(), fullMsg, logger);
           logger.debug("The fail message has send to ->" + tel);
         }
         catch (IOException e){
