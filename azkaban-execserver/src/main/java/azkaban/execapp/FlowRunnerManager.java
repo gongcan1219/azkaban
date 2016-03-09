@@ -28,7 +28,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 
-import azkaban.utils.hash.ConsistentHash;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 

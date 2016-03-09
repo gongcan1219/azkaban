@@ -197,7 +197,7 @@ public class ExecutorManager extends EventHandler implements
     } else if (azkProps.containsKey("executor.port")) {
       // Add local executor, if specified as per properties
       /*String executorHost = azkProps.getString("executor.host", "localhost");*/
-      String executorHost = azkProps.getString("executor.host");
+      String executorHost = azkProps.getString("executor.host", null);
       if (executorHost == null) {
         try {
           executorHost = Utils.getHostIP();
