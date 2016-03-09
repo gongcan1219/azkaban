@@ -16,14 +16,7 @@
 
 package azkaban.utils;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
@@ -86,7 +79,8 @@ public class Props {
     this(parent);
     setSource(file.getPath());
 
-    InputStream input = new BufferedInputStream(new FileInputStream(file));
+    /*InputStream input = new BufferedInputStream(new FileInputStream(file));*/
+    Reader input = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
     try {
       loadFrom(input);
     } catch (IOException e) {
@@ -109,6 +103,18 @@ public class Props {
   }
 
   /**
+   * Create props from property input streams
+   *
+   * @param parent
+   * @param inputStreams
+   * @throws IOException
+   */
+  public Props(Props parent, Reader inputStream) throws IOException {
+    this(parent);
+    loadFrom(inputStream);
+  }
+
+  /**
    *
    * @param inputStream
    * @throws IOException
@@ -116,6 +122,17 @@ public class Props {
   private void loadFrom(InputStream inputStream) throws IOException {
     Properties properties = new Properties();
     properties.load(inputStream);
+    this.put(properties);
+  }
+
+  /**
+   *
+   * @param reader
+   * @throws IOException
+   */
+  private void loadFrom(Reader reader) throws IOException {
+    Properties properties = new Properties();
+    properties.load(reader);
     this.put(properties);
   }
 
