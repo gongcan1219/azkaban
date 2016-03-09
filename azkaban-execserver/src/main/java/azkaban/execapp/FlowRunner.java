@@ -194,11 +194,12 @@ public class FlowRunner extends EventHandler implements Runnable {
     }*/
     try {
       flow.printFlowPros();
+      logger.info("Oh my god !");
       for (Map.Entry<String,Object> e : flow.toObject().entrySet()) {
         logger.info(String.format("consistent hash flow key %s val %s", e.getKey(), e.getValue()));
       }
     } catch (Exception e) {
-      logger.info(e.getMessage());
+      logger.error("Say good bye !", e);
     }
     return this;
   }
