@@ -181,25 +181,16 @@ public class FlowRunner extends EventHandler implements Runnable {
   }
 
   public FlowRunner setConsistentHash() {
-    /*List<String> hosts  = flow.getLimitHosts();
+    List<String> hosts  = flow.getLimitHosts();
     if (hosts != null && hosts.size() > 0) {
       try {
         this.consistentHash = new ConsistentHash<String>(replicas,hosts);
       } catch (Exception e) {
-        logger.warn("init consistentHash error",e);
+        System.out.println(String.format("init consistentHash error %s", e.getMessage()));
       }
-      logger.info("hosts -> " + Arrays.toString(hosts.toArray()));
+      System.out.println("hosts -> " + Arrays.toString(hosts.toArray()));
     } else {
-      logger.info("run with single machine");
-    }*/
-    try {
-      flow.printFlowPros();
-      //System.out.println("Oh my god !");
-      for (Map.Entry<String,Object> e : flow.toObject().entrySet()) {
-        System.out.println(String.format("consistent hash flow key %s val %s", e.getKey(), e.getValue()));
-      }
-    } catch (Exception e) {
-      System.err.println("Say good bye ! -> " + e.getMessage());
+      System.out.println("run with single machine");
     }
     return this;
   }
