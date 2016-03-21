@@ -151,7 +151,7 @@ public class AzkabanProcess {
     }
   }
 
-  public AzkabanProcess initCmd(final String aHost){
+  public AzkabanProcess initCmd(final String aHost, final String runDayTime, int runCount){
     this.aHost = aHost;
     for (String cm : cmd) {
       Matcher pm = Pattern.compile(hostMex).matcher(cm);
@@ -209,6 +209,13 @@ public class AzkabanProcess {
       }
       host = aHost;
       cmd = cmds;
+      if (runDayTime != null) {
+        cmd.add(runDayTime);
+
+        if (runCount > 1) {
+          cmd.add(Integer.toString(runCount));
+        }
+      }
       logger.info("ssh host ->" + "\t" + aHost);
     } else {
       logger.info("exe host ->" + "\t" + localHost);

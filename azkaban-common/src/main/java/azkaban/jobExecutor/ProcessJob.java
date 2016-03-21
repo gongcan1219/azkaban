@@ -143,7 +143,9 @@ public class ProcessJob extends AbstractProcessJob {
         builder =
             new AzkabanProcessBuilder(partitionCommandLine(command))
                     .setEnv(envVars).setWorkingDir(getCwd()).setLogger(getLog())
-                    .setAHost(jobProps.getString("ssh.host",null));
+                    .setAHost(jobProps.getString("ssh.host",null))
+                    .setRunDayTime(jobProps.getString("runDayTime",null))
+                    .setRunCount(jobProps.getInt("runCount",1));
       }
 
       if (builder.getEnv().size() > 0) {

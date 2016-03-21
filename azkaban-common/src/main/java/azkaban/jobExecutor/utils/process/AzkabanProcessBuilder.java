@@ -44,6 +44,9 @@ public class AzkabanProcessBuilder {
 
   private String aHost = null;
 
+  private String runDayTime = null;
+  private Integer runCount = 1;
+
   public AzkabanProcessBuilder(String... command) {
     addArg(command);
   }
@@ -61,6 +64,24 @@ public class AzkabanProcessBuilder {
 
   public AzkabanProcessBuilder setAHost(final String aHost) {
     this.aHost = aHost;
+    return this;
+  }
+
+  public String getRunDayTime() {
+    return runDayTime;
+  }
+
+  public AzkabanProcessBuilder setRunDayTime(String runDayTime) {
+    this.runDayTime = runDayTime;
+    return this;
+  }
+
+  public Integer getRunCount() {
+    return runCount;
+  }
+
+  public AzkabanProcessBuilder setRunCount(Integer runCount) {
+    this.runCount = runCount;
     return this;
   }
 

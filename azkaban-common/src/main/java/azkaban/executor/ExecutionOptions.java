@@ -51,6 +51,9 @@ public class ExecutionOptions {
   private static final String MEMORY_CHECK = "memoryCheck";
   private static final String LIMIT_HOSTS = "limitHosts";
 
+  private static final String RUN_DAYTIME = "runDayTime";
+  private static final String RUN_COUNT = "runCount";
+
   private boolean notifyOnFirstFailure = true;
   private boolean notifyOnLastFailure = false;
   private boolean failureEmailsOverride = false;
@@ -65,6 +68,8 @@ public class ExecutionOptions {
   private String concurrentOption = CONCURRENT_OPTION_IGNORE;
   private String mailCreator = DefaultMailCreator.DEFAULT_MAIL_CREATOR;
   private boolean memoryCheck = true;
+  private String runDayTime = null;
+  private Integer runCount = 1;
   private Map<String, String> flowParameters = new HashMap<String, String>();
 
   public enum FailureAction {
@@ -199,6 +204,37 @@ public class ExecutionOptions {
     this.memoryCheck = memoryCheck;
   }
 
+  public String getRunDayTime() {
+    if (runDayTime == null && flowParameters !=null && flowParameters.size() > 0) {
+      if (flowParameters.containsKey(RUN_DAYTIME)) {
+        this.setRunDayTime(flowParameters.get(RUN_DAYTIME));
+      }
+    }
+    return runDayTime;
+  }
+
+  public void setRunDayTime(String runDayTime) {
+    this.runDayTime = runDayTime;
+  }
+
+  public Integer getRunCount() {
+    if (runCount <= 1 && flowParameters != null && flowParameters.size() > 0 && flowParameters.containsKey(RUN_COUNT)) {
+      int count = 1;
+      try {
+        count = Integer.parseInt(flowParameters.get(RUN_COUNT));
+      } catch (Exception e) {
+        count = 1;
+        e.printStackTrace();
+      }
+      this.setRunCount(count);
+    }
+    return runCount;
+  }
+
+  public void setRunCount(Integer runCount) {
+    this.runCount = runCount;
+  }
+
   public Map<String, Object> toObject() {
     HashMap<String, Object> flowOptionObj = new HashMap<String, Object>();
 
@@ -237,6 +273,19 @@ public class ExecutionOptions {
           .<String, String> getMap(FLOW_PARAMETERS));
       if (options.flowParameters.containsKey(LIMIT_HOSTS)) {
         options.setLimitHosts(Arrays.asList(StringUtils.split(options.flowParameters.get(LIMIT_HOSTS), "\\s*,\\s*|\\s*;\\s*|\\s+")));
+      }
+      if (options.flowParameters.containsKey(RUN_DAYTIME)) {
+        options.setRunDayTime(options.flowParameters.get(RUN_DAYTIME));
+      }
+      if (options.flowParameters.containsKey(RUN_COUNT)) {
+        int count = 1;
+        try {
+          count = Integer.parseInt(options.flowParameters.get(RUN_COUNT));
+        } catch (Exception e) {
+          count = 1;
+          e.printStackTrace();
+        }
+        options.setRunCount(count);
       }
     }
     // Failure notification

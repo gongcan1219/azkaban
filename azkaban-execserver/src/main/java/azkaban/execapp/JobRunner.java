@@ -88,6 +88,9 @@ public class JobRunner extends EventHandler implements Runnable {
 
   private Set<String> proxyUsers = null;
 
+  private String runDayTime = null;
+  private Integer runCount = 1;
+
   private String jobLogChunkSize;
   private int jobLogBackupIndex;
 
@@ -124,6 +127,22 @@ public class JobRunner extends EventHandler implements Runnable {
 
   public void setConsistentHash(ConsistentHash<String> consistentHash) {
     this.consistentHash = consistentHash;
+  }
+
+  public String getRunDayTime() {
+    return runDayTime;
+  }
+
+  public void setRunDayTime(String runDayTime) {
+    this.runDayTime = runDayTime;
+  }
+
+  public Integer getRunCount() {
+    return runCount;
+  }
+
+  public void setRunCount(Integer runCount) {
+    this.runCount = runCount;
   }
 
   public Props getProps() {
@@ -526,6 +545,9 @@ public class JobRunner extends EventHandler implements Runnable {
           return false;
         }
       }
+
+      props.put("runDayTime",runDayTime);
+      props.put("runCount", runCount);
 
       try {
         if (consistentHash != null) {

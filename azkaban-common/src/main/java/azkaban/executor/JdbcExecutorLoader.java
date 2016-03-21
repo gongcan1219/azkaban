@@ -557,8 +557,8 @@ public class JdbcExecutorLoader extends AbstractJdbcLoader implements
     try {
       Pair<Props, Props> props =
           runner.query(
-              FetchExecutableJobPropsHandler.FETCH_INPUT_PARAM_EXECUTABLE_NODE,
-              new FetchExecutableJobPropsHandler(), execId, jobId);
+                  FetchExecutableJobPropsHandler.FETCH_INPUT_PARAM_EXECUTABLE_NODE,
+                  new FetchExecutableJobPropsHandler(), execId, jobId);
       return props.getFirst();
     } catch (SQLException e) {
       throw new ExecutorManagerException("Error querying job params " + execId
@@ -591,8 +591,8 @@ public class JdbcExecutorLoader extends AbstractJdbcLoader implements
       Pair<Props, Props> props =
           runner
               .query(
-                  FetchExecutableJobPropsHandler.FETCH_INPUT_OUTPUT_PARAM_EXECUTABLE_NODE,
-                  new FetchExecutableJobPropsHandler(), execId, jobId);
+                      FetchExecutableJobPropsHandler.FETCH_INPUT_OUTPUT_PARAM_EXECUTABLE_NODE,
+                      new FetchExecutableJobPropsHandler(), execId, jobId);
       return props;
     } catch (SQLException e) {
       throw new ExecutorManagerException("Error querying job params " + execId
@@ -877,7 +877,7 @@ public class JdbcExecutorLoader extends AbstractJdbcLoader implements
     try {
       List<Executor> executors =
         runner.query(FetchExecutorHandler.FETCH_EXECUTOR_BY_ID,
-          executorHandler, executorId);
+                executorHandler, executorId);
       if (executors.isEmpty()) {
         return null;
       } else {
@@ -930,6 +930,8 @@ public class JdbcExecutorLoader extends AbstractJdbcLoader implements
               runner.update(UPDATE, Boolean.TRUE, host, port);
       if (rows == 0) {
         throw new ExecutorManagerException(String.format("No executor with host : %s port : %s", host, port));
+      } else {
+        logger.warn(String.format("Stop the executors %s with host : %s port %s", rows, host, port));
       }
     } catch (SQLException e) {
       throw new ExecutorManagerException(String.format("Error inactivating executor host %s port %s", host, port), e);

@@ -110,6 +110,9 @@ public class FlowRunner extends EventHandler implements Runnable {
   private Set<String> proxyUsers = null;
   private boolean validateUserProxy;
 
+  private String runDayTime = null;
+  private Integer runCount = 1;
+
   private String jobLogFileSize = "5MB";
   private int jobLogNumFiles = 4;
 
@@ -165,6 +168,8 @@ public class FlowRunner extends EventHandler implements Runnable {
     this.pipelineLevel = options.getPipelineLevel();
     this.pipelineExecId = options.getPipelineExecutionId();
     this.failureAction = options.getFailureAction();
+    this.runDayTime = options.getRunDayTime();
+    this.runCount = options.getRunCount();
     this.proxyUsers = flow.getProxyUsers();
     this.executorService = executorService;
     this.finishedNodes = new SwapQueue<ExecutableNode>();
@@ -846,6 +851,8 @@ public class FlowRunner extends EventHandler implements Runnable {
     }
 
     jobRunner.setConsistentHash(consistentHash);
+    jobRunner.setRunDayTime(runDayTime);
+    jobRunner.setRunCount(runCount);
 
     jobRunner.setDelayStart(node.getDelayedExecution());
     jobRunner.setLogSettings(logger, jobLogFileSize, jobLogNumFiles);
