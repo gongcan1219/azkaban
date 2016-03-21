@@ -850,13 +850,13 @@ public class FlowRunner extends EventHandler implements Runnable {
       jobRunner.setValidatedProxyUsers(proxyUsers);
     }
 
-    jobRunner.setConsistentHash(consistentHash);
-    jobRunner.setRunDayTime(runDayTime);
-    jobRunner.setRunCount(runCount);
-
     jobRunner.setDelayStart(node.getDelayedExecution());
     jobRunner.setLogSettings(logger, jobLogFileSize, jobLogNumFiles);
     jobRunner.addListener(listener);
+
+    jobRunner.setConsistentHash(consistentHash);
+    jobRunner.setRunDayTime(runDayTime);
+    jobRunner.setRunCount(runCount);
 
     if (JobCallbackManager.isInitialized()) {
       jobRunner.addListener(JobCallbackManager.getInstance());
