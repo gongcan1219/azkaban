@@ -209,7 +209,7 @@ public class AzkabanProcess {
       }
       host = aHost;
       cmd = cmds;
-      if (runDayTime != null) {
+      if (runDayTime != null && !runDayTime.isEmpty() && !runDayTime.trim().isEmpty()) {
         cmd.add(runDayTime);
 
         if (runCount > 1) {

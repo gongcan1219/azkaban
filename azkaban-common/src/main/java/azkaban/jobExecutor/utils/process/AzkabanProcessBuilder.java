@@ -133,9 +133,9 @@ public class AzkabanProcessBuilder {
   public AzkabanProcess build() {
     if (isExecuteAsUser) {
       return new AzkabanProcess(cmd, env, workingDir, logger,
-          executeAsUserBinaryPath, effectiveUser).initCmd(aHost);
+          executeAsUserBinaryPath, effectiveUser).initCmd(aHost, runDayTime, runCount);
     } else {
-      return new AzkabanProcess(cmd, env, workingDir, logger).initCmd(aHost);
+      return new AzkabanProcess(cmd, env, workingDir, logger).initCmd(aHost, runDayTime, runCount);
     }
   }
 
