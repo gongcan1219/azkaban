@@ -220,6 +220,7 @@ public class AzkabanProcess {
     } else {
       logger.info("exe host ->" + "\t" + localHost);
     }
+    logger.info(String.format("command => %s",Arrays.toString(cmd.toArray())));
     return this;
   }
 
