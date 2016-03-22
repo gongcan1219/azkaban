@@ -135,7 +135,7 @@ public class JobRunner extends EventHandler implements Runnable {
 
   public void setRunDayTime(String runDayTime) {
     this.runDayTime = runDayTime;
-    logger.info(String.format("just test params %s",runDayTime));
+    System.out.println(String.format("just test params %s",runDayTime));
   }
 
   public Integer getRunCount() {
