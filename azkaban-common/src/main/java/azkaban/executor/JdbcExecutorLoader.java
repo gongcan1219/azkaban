@@ -892,7 +892,7 @@ public class JdbcExecutorLoader extends AbstractJdbcLoader implements
   /**
    * {@inheritDoc}
    *
-   * @see azkaban.executor.ExecutorLoader#updateExecutor(int)
+   * @see azkaban.executor.ExecutorLoader#updateExecutor(Executor)
    */
   @Override
   public void updateExecutor(Executor executor) throws ExecutorManagerException {
@@ -917,7 +917,7 @@ public class JdbcExecutorLoader extends AbstractJdbcLoader implements
   /**
    * {@inheritDoc}
    *
-   * @see azkaban.executor.ExecutorLoader#removeExecutor(int)
+   * @see azkaban.executor.ExecutorLoader#removeExecutor(String,int)
    */
   @Override
   public void removeExecutor(String host, int port) throws ExecutorManagerException {
@@ -927,7 +927,7 @@ public class JdbcExecutorLoader extends AbstractJdbcLoader implements
     QueryRunner runner = createQueryRunner();
     try {
       int rows =
-              runner.update(UPDATE, Boolean.TRUE, host, port);
+              runner.update(UPDATE, Boolean.FALSE, host, port);
       if (rows == 0) {
         throw new ExecutorManagerException(String.format("No executor with host : %s port : %s", host, port));
       } else {
