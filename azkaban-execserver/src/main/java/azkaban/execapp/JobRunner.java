@@ -407,7 +407,7 @@ public class JobRunner extends EventHandler implements Runnable {
       Arrays.sort(files, Collections.reverseOrder());
 
       loader.uploadLogFile(executionId, this.node.getNestedId(), attemptNo,
-          files);
+              files);
     } catch (ExecutorManagerException e) {
       flowLogger.error(
           "Error writing out logs for job " + this.node.getNestedId(), e);
@@ -547,7 +547,9 @@ public class JobRunner extends EventHandler implements Runnable {
         }
       }
 
-      props.put("runDayTime",runDayTime);
+      if (runDayTime != null) {
+        props.put("runDayTime",runDayTime);
+      }
       props.put("runCount", runCount);
 
       try {
