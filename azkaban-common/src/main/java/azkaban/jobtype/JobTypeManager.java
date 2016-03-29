@@ -367,7 +367,7 @@ public class JobTypeManager {
               jobProps, logger);
     } catch (Exception e) {
       logger.error("Failed to build job executor for job " + jobId
-          + e.getMessage());
+          + e.getMessage(),e);
       throw new JobTypeManagerException("Failed to build job executor for job "
           + jobId, e);
     } catch (Throwable t) {
