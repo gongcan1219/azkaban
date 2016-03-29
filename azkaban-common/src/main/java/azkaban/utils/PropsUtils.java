@@ -158,8 +158,12 @@ public class PropsUtils {
       String value = props.get(key);
 
       visitedVariables.add(key);
-      String replacedValue =
-          resolveVariableReplacement(value, props, visitedVariables);
+      String replacedValue = null;
+      try {
+        replacedValue = resolveVariableReplacement(value, props, visitedVariables);
+      } catch (Exception e) {
+        System.out.println(String.format("What'a suprise key %s , val %s", key,value));
+      }
       visitedVariables.clear();
 
       resolvedProps.put(key, replacedValue);
