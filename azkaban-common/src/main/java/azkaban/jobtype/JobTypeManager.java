@@ -108,7 +108,7 @@ public class JobTypeManager {
 
     if (!jobPluginsDir.exists()) {
       logger.error("Job type plugin dir " + jobTypePluginDir
-          + " doesn't exist. Will not load any external plugins.");
+              + " doesn't exist. Will not load any external plugins.");
       return;
     } else if (!jobPluginsDir.isDirectory()) {
       throw new JobTypeManagerException("Job type plugin dir "
@@ -349,7 +349,14 @@ public class JobTypeManager {
           }
         }
       }
-      jobProps = PropsUtils.resolveProps(jobProps);
+      try {
+        logger.info(String.format("Just test the bug ! %s", jobProps));
+        jobProps = PropsUtils.resolveProps(jobProps);
+      } catch (Exception e) {
+        logger.error(String.format("What'a fucking day ! %s", jobProps),e);
+      } finally {
+        logger.info(String.format("Just show the changed props ! %s", jobProps));
+      }
 
       Props pluginLoadProps = pluginSet.getPluginLoaderProps(jobType);
       if (pluginLoadProps != null) {
