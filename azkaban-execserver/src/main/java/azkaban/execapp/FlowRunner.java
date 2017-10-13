@@ -1111,6 +1111,7 @@ public class FlowRunner extends EventHandler implements Runnable {
     private synchronized void sendMsg(final ExecutableNode node){
 
       List<String> alarmList  = globalProps.getStringList("alarm.tel.list", Collections.<String> emptyList());
+      List<String> methods = globalProps.getStringList("alarm.msg.methods", Collections.<String> emptyList());
       String msgUrl = globalProps.getString("alarm.msg.url", "");
       String msgContent = globalProps.getString("alarm.msg.content", "");
       String sign = globalProps.getString("alarm.msg.sign", "");
@@ -1151,10 +1152,13 @@ public class FlowRunner extends EventHandler implements Runnable {
       logger.debug(Arrays.toString(alarmTell.toArray()));
 
       for(String tel:alarmTell){
-
         try {
-          ShortMsg.sendMsg(msgUrl.trim(), tel.trim(), fullMsg, logger);
-          logger.debug("The fail message has send to ->" + tel);
+          for (String method: methods) {
+            ShortMsg.sendMsgGet(msgUrl.trim(), method, tel.trim(), fullMsg, logger);
+            logger.debug("The fail message has send to ->" + tel + "with method => " + method);
+          }
+          //ShortMsg.sendMsgPost(msgUrl.trim(), tel.trim(), fullMsg, logger);
+          //logger.debug("The fail message has send to ->" + tel);
         }
         catch (IOException e){
           logger.warn(e.getMessage());
