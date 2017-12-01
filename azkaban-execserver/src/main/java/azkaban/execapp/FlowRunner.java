@@ -1112,7 +1112,8 @@ public class FlowRunner extends EventHandler implements Runnable {
 
       List<String> alarmList  = globalProps.getStringList("alarm.tel.list", Collections.<String> emptyList());
       List<String> methods = globalProps.getStringList("alarm.msg.methods", Collections.<String> emptyList());
-      String msgUrl = globalProps.getString("alarm.msg.url", "");
+      String host = globalProps.getString("alarm.msg.host", "");
+      String path = globalProps.getString("alarm.msg.path", "");
       String msgContent = globalProps.getString("alarm.msg.content", "");
       String sign = globalProps.getString("alarm.msg.sign", "");
 
@@ -1152,19 +1153,18 @@ public class FlowRunner extends EventHandler implements Runnable {
       logger.debug(Arrays.toString(alarmTell.toArray()));
 
       for(String tel:alarmTell){
-        try {
-          for (String method: methods) {
-            ShortMsg.sendMsgGet(msgUrl.trim(), method, tel.trim(), fullMsg, logger);
+        logger.debug("Alarm tell methods -> " + Arrays.toString(methods.toArray()));
+        for (String method: methods) {
+          try {
+            ShortMsg.sendMsgGet(host.trim(), path.trim(), method.trim(), tel.trim(), fullMsg, logger);
             logger.debug("The fail message has send to ->" + tel + "with method => " + method);
           }
-          //ShortMsg.sendMsgPost(msgUrl.trim(), tel.trim(), fullMsg, logger);
-          //logger.debug("The fail message has send to ->" + tel);
-        }
-        catch (IOException e){
-          logger.warn(e.getMessage());
+          catch (Exception e){
+            logger.warn(String.format("Send alarm msg %s with method %s to host %s under path %s has some problem %s",
+                    fullMsg, method, host, path, e.getMessage()), e);
+          }
         }
       }
-
     }
   }
 
